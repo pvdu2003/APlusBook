@@ -2,11 +2,12 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const methodOverride = require("method-override");
+const dotenv = require("dotenv").config();
 const db = require("./config/db");
 const route = require("./routes/main.route");
 
 db.connect();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
 
 app.set("view engine", "ejs");
