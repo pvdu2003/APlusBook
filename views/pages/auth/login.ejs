@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login Form</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %>
+  <body>
+    <%- include('../../partials/header') %>
+    <form
+      class="container-sm bg-main-lighter my-5 px-5 py-4 rounded"
+      style="max-width: 720px"
+      action="/auth/login"
+      method="post"
+    >
+      <h3 class="text-center mb-3">Welcome to My Website</h3>
+      <div class="mb-2">
+        <label for="userName" class="form-label">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          id="username"
+          name="username"
+          placeholder="Please enter your username"
+          required
+        />
+        <p class="text-danger fst-italic err-msg"><%= err.username %></p>
+      </div>
+      <div class="mb-2">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          placeholder="Please enter your password"
+          required
+        />
+        <p class="text-danger fst-italic err-msg"><%= err.password %></p>
+      </div>
+      <button type="submit" class="btn bg-main mt-3 text-light col-12">
+        Login
+      </button>
+      <hr />
+      <p class="text-center">
+        You do not have account before? <br />
+        Please sign up by clicking <a href="/auth/register">here</a> first.
+      </p>
+    </form>
+  </body>
+</html>

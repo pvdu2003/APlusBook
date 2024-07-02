@@ -1,0 +1,51 @@
+<nav class="navbar bg-main px-5">
+  <div class="col-1">
+    <a class="navbar-brand" href="/">
+      <img
+        src="/APlusBook_logo.png"
+        alt="A Plus Book Logo"
+        style="width: 100px; height: 60px"
+      />
+    </a>
+  </div>
+  <div class="dropdown d-flex align-items-center bg-light p-2 rounded">
+    <button
+      class="dropdown-toggle bg-light border-0 text-dark"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      <i class="fas fa-filter me-1"></i>
+      Categories
+    </button>
+    <ul class="dropdown-menu">
+      <% categories.forEach(category => { %>
+      <li>
+        <a class="dropdown-item" href="/category/<%= category.id %>"
+          ><%= category.name %></a
+        >
+      </li>
+      <% }); %>
+    </ul>
+  </div>
+  <form class="d-flex col-6" role="search" action="/book/list" method="get">
+    <input
+      class="form-control me-2 rounded-pill"
+      name="title"
+      th:value="${title}"
+      type="search"
+      placeholder="Search books here"
+      aria-label="Search"
+    />
+    <button class="btn bg-main btn-outline-light rounded-circle" type="submit">
+      <i class="fas fa-magnifying-glass icon-custom"></i>
+    </button>
+  </form>
+  <div class="d-flex justify-content-around col-1">
+    <a href="/account/details">
+      <i class="fas fa-user icon-custom"></i>
+    </a>
+    <a href="/my-cart">
+      <i class="fas fa-cart-shopping icon-custom"></i>
+    </a>
+  </div>
+</nav>

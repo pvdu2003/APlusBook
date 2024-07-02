@@ -1,0 +1,51 @@
+.bg-main {
+  background-color: #07689f;
+}
+.bg-main-lighter {
+  background-color: #cce4f1;
+}
+.icon-custom {
+  size: 108;
+  color: white;
+}
+#footer {
+  position: fixed;
+  width: 100%;
+  left: 0px;
+  bottom: 0px;
+  padding-top: 12px;
+  margin-top: 20px;
+}
+.err-msg {
+  font-size: 12px;
+}
+.btn.bg-main {
+  background-color: #07689f;
+}
+.btn-sm.bg-main:hover,
+.btn-sm.bg-main:focus,
+.btn.bg-main:hover,
+.btn.bg-main:focus {
+  background-color: #07689f;
+  opacity: 0.9;
+}
+.text-main {
+  color: #07689f !important;
+}
+.pagination .page-link {
+  color: #07689f; /* Set the desired color */
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #07689f; /* Set the desired background color */
+  border-color: #07689f; /* Set the desired border color */
+  color: #ffffff; /* Set the desired text color */
+}
+
+.pagination .page-link:hover {
+  color: #cce4f1; /* Set the desired hover color */
+}
+
+.pagination .page-item.disabled .page-link {
+  opacity: 0.5; /* Set the desired opacity for disabled links */
+}
