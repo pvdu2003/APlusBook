@@ -1,6 +1,6 @@
 const dotenv = require("dotenv").config();
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-strategy").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/user.schema");
 
 passport.serializeUser((user, done) => {
@@ -20,18 +20,19 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "/auth/google/redirect",
+      callbackURL: "http://localhost:3000/auth/google/redirect",
     },
     (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id })
+      User.findOne({ email: profile.emails[0].value })
         .then((user) => {
           if (user) {
             done(null, user);
           } else {
-            let newUser = new User({
-              googleId: profile.id,
-              username: profile.displayName,
+            const newUser = new User({
+              username: profile.displayName.replace(/\s/g, "").toLowerCase(),
+              name: profile.displayName,
               email: profile.emails[0].value,
+              role: "user",
             });
             newUser
               .save()
