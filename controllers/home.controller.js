@@ -38,14 +38,11 @@ class homeController {
         top5Cat.map(async (cat) => {
           const books = await Book.find({ cat_id: cat._id })
             .sort({ quantity_sold: -1 })
-            .limit(5)
+            .limit(6)
             .lean();
           return { cat_id: cat._id, category: cat.name, books: books };
         })
       );
-      console.log(topBooksPerCategory[0]);
-      // const books = await Book.find().limit(20);
-      // console.log(top5Cat);
       res.render("pages/home/homePage", { topBooksPerCategory });
     } catch (e) {
       next(e);

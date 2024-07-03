@@ -6,33 +6,58 @@
   </head>
   <% if (typeof err === 'undefined') err = {}; %>
   <body>
-    <%- include('../../partials/header') %> <% topBooksPerCategory.forEach(cat
-    => { %>
-    <h3><%= cat.category %></h3>
-    <% cat.books.forEach(book => { %>
-
-    <div class="card mb-2 mx-1 col-3" style="width: 12rem; height: 16rem">
-      <a href="/book/<%= book._id %>"
-        ><img
-          src="<%= book.image %>"
-          class="card-img-top mt-2 mb-0"
-          alt="Book Image"
-          style="height: 12rem"
-      /></a>
-      <div class="card-body pb-1 mt-2" style="padding: 0px !important">
-        <a href="/book/<%= book._id %>" class="text-decoration-none text-dark">
-          <h5
-            class="card-title fs-6 text-start fw-bold text-truncate ps-0 my-0"
-          >
-            <%= book.title %>
+    <%- include('../../partials/header') %> <%
+    topBooksPerCategory.forEach(function(cat) { %>
+    <div class="container-md my-3 py-2 px-3 bg-light">
+      <div class="row d-flex justify-content-around">
+        <div class="d-flex justify-content-between pb-2">
+          <h5>
+            <a
+              class="text-main text-decoration-none"
+              href="/category/<%= cat.cat_id %>"
+              ><%= cat.category %></a
+            >
           </h5>
-        </a>
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="card-text text-main fs-6 fw-bold"><%= book.price %>$</p>
-          <p style="font-size: 14px">Sold: <%= book.quantity_sold %></p>
+          <a
+            class="fs-6 fst-italic text-main text-decoration-none"
+            href="/category/<%= cat.cat_id %>"
+            >More
+            <i
+              class="fas fa-chevron-right text-main align-middle"
+              style="font-size: 14px"
+            ></i
+          ></a>
         </div>
+        <% cat.books.forEach(function(book) { %>
+
+        <div class="card mb-2 mx-1 col-2" style="width: 12rem; height: 16rem">
+          <a href="/book/<%= book._id %>"
+            ><img
+              src="<%= book.image %>"
+              class="card-img-top mt-2 mb-0"
+              alt="Book Image"
+              style="height: 12rem"
+          /></a>
+          <div class="card-body pb-1 mt-2" style="padding: 0px !important">
+            <a
+              href="/book/<%= book._id %>"
+              class="text-decoration-none text-dark"
+            >
+              <h5
+                class="card-title fs-6 text-start fw-bold text-truncate ps-0 my-0"
+              >
+                <%= book.title %>
+              </h5>
+            </a>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="card-text text-main fs-6 fw-bold"><%= book.price %>$</p>
+              <p style="font-size: 14px">Sold: <%= book.quantity_sold %></p>
+            </div>
+          </div>
+        </div>
+        <%}) %>
       </div>
     </div>
-    <%}) %> <% }); %>
+    <% }); %>
   </body>
 </html>
