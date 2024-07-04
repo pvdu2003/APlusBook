@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login Form</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %>
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5">
+      <div class="row align-items-start mt-5">
+        <%- include('../../partials/userNav') %>
+        <div class="col-8 text-start ms-5">
+          <div class="ms-5">
+            <h4 class="text-center fw-bold">ACCOUNT INFORMATION</h4>
+            <p>Username: <span><%= user.username %></span></p>
+            <p>Email: <span><%= user.email %></span></p>
+            <% if(user.phone_num) {%>
+            <p>Phone Number: <span><%= user.phone_num %></span></p>
+            <%} %>
+            <p>Role: <span><%= user.role %></span></p>
+            <p>Created At: <%= user.createdAt %></p>
+            <a class="btn bg-main text-light" href="/account/update">Update</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

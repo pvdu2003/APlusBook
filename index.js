@@ -23,6 +23,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extends: true }));
 app.use(cookieParser());

@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/user.controller");
 
 // router.get("/profile/:id", userController.userProfile);
-// router.get("/profile", userController.myProfile);
+router.get("/profile", userController.myProfile);
 // router.get("/change-password", userController.changePwd);
 // router.post("/change-password", userController.changePwdHandler);
 // router.get("/getTeachers", userController.getTeachers);
