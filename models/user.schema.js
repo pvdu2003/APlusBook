@@ -11,6 +11,8 @@ const userSchema = new Schema(
     phone_num: { type: String },
     email: { type: String, required: true },
     role: { type: String, default: "user" },
+    address: { type: String },
+    dob: { type: Date },
   },
   {
     versionKey: false,

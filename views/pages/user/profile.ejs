@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Login Form</title>
+    <title>Profile</title>
     <%- include('../../partials/main') %>
   </head>
   <% if (typeof err === 'undefined') err = {}; %>
@@ -13,17 +13,57 @@
         <div class="col-8 text-start ms-5">
           <div class="ms-5">
             <h4 class="text-center fw-bold">ACCOUNT INFORMATION</h4>
-            <p>Username: <span><%= user.username %></span></p>
-            <p>Email: <span><%= user.email %></span></p>
-            <% if(user.phone_num) {%>
-            <p>Phone Number: <span><%= user.phone_num %></span></p>
+            <p>
+              Username:
+              <span class="text-main fw-medium"><%= usr.username %></span>
+            </p>
+            <p>
+              Email: <span class="text-main fw-medium"><%= usr.email %></span>
+            </p>
+            <% if(usr.dob&& usr.dob!=="") {%>
+            <p>
+              Date of birth:
+              <span class="text-main fw-medium"
+                ><%= usr.dob.toLocaleString('en-US', { month: 'long', day:
+                'numeric', year: 'numeric' }) %></span
+              >
+            </p>
+            <%} %> <% if(usr.phone_num&& usr.phone_num!=="") {%>
+            <p>
+              Phone Number:
+              <span class="text-main fw-medium"><%= usr.phone_num %></span>
+            </p>
+            <%} %> <% if(usr.address&&usr.address!== "") {%>
+            <p>
+              Address:
+              <span class="text-main fw-medium"><%= usr.address %></span>
+            </p>
             <%} %>
-            <p>Role: <span><%= user.role %></span></p>
-            <p>Created At: <%= user.createdAt %></p>
-            <a class="btn bg-main text-light" href="/account/update">Update</a>
+            <p>
+              Role: <span class="text-main fw-medium"><%= usr.role %></span>
+            </p>
+            <p>
+              Created At:<span class="text-main fw-medium">
+                <%= usr.createdAt.toLocaleString('en-US', { month: 'long', day:
+                'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
+                second: 'numeric' }) %></span
+              >
+            </p>
+            <% if(usr.updatedAt.getTime() !== usr.createdAt.getTime()) {%>
+            <p>
+              Updated at:
+              <span class="text-main fw-medium">
+                <%= usr.updatedAt.toLocaleString('en-US', { month: 'long', day:
+                'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
+                second: 'numeric' }) %></span
+              >
+            </p>
+            <%} %>
+            <a class="btn bg-main text-light" href="/user/update">Update</a>
           </div>
         </div>
       </div>
     </div>
+    <%- include('../../partials/footer') %>
   </body>
 </html>
