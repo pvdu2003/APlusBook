@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Login Form</title>
+    <title>Book List</title>
     <%- include('../../partials/main') %>
   </head>
   <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
@@ -55,14 +55,18 @@
             <li
               class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
             >
-              <a class="page-link" href="/book/list?page=1"
+              <a
+                class="page-link"
+                href="/book/list?page=1&from=<%= from %>&to=<%= to %>&title=<%= title %>"
                 ><i class="fas fa-angle-double-left"></i
               ></a>
             </li>
             <li
               class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
             >
-              <a class="page-link" href="/book/list?page=<%= currentPage-1 %>"
+              <a
+                class="page-link"
+                href="/book/list?page=<%= currentPage-1 %>&from=<%= from %>&to=<%= to %>&title=<%= title %>"
                 ><i class="fas fa-chevron-left"></i
               ></a>
             </li>
@@ -70,7 +74,9 @@
             <li
               class="<%= pageNum == currentPage ? 'page-item active bg-main' : 'page-item' %>"
             >
-              <a class="page-link" href="/book/list?page=<%= pageNum %>"
+              <a
+                class="page-link"
+                href="/book/list?page=<%= pageNum %>&from=<%= from %>&to=<%= to %>&title=<%= title %>"
                 ><%= pageNum %></a
               >
             </li>
@@ -78,14 +84,18 @@
             <li
               class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
             >
-              <a class="page-link" href="/book/list?page=<%= currentPage+1 %>"
+              <a
+                class="page-link"
+                href="/book/list?page=<%= currentPage+1 %>&from=<%= from %>&to=<%= to %>&title=<%= title %>"
                 ><i class="fas fa-chevron-right"></i
               ></a>
             </li>
             <li
               class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
             >
-              <a class="page-link" href="/book/list?page=<%= totalPages %>"
+              <a
+                class="page-link"
+                href="/book/list?page=<%= totalPages %>&from=<%= from %>&to=<%= to %>&title=<%= title %>"
                 ><i class="fas fa-angle-double-right"></i
               ></a>
             </li>
