@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Change password</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %>
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5">
+      <div class="row align-items-start mt-5">
+        <%- include('../../partials/userNav') %>
+
+        <div class="col-8 text-start ms-5">
+          <h4 class="text-center fw-bold">Change password</h4>
+          <form
+            class="container-sm py-4 rounded row g-2"
+            style="max-width: 720px"
+            action="/user/change-password?_method=PATCH"
+            method="post"
+          >
+            <div class="col-md-12">
+              <label for="password" class="form-label">Current password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Please enter your current password"
+                required
+              />
+              <p class="text-danger fst-italic err-msg"><%= err.password %></p>
+            </div>
+            <div class="col-md-6">
+              <label for="new_password" class="form-label">New password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="new_password"
+                name="new_password"
+                placeholder="Please enter your new password"
+                required
+              />
+              <p class="text-danger fst-italic err-msg">
+                <%= err.new_password %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <label for="confirm_pwd" class="form-label"
+                >Confirm password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="confirm_pwd"
+                name="confirm_pwd"
+                placeholder="Please enter your confirm password"
+                required
+              />
+              <p class="text-danger fst-italic err-msg">
+                <%= err.confirm_pwd %>
+              </p>
+            </div>
+
+            <div class="d-flex flex-row justify-content-end">
+              <button type="submit" class="btn bg-main mt-3 me-2 text-light">
+                Save
+              </button>
+              <a href="/user/profile" class="btn btn-secondary mt-3 text-light">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>
