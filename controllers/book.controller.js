@@ -56,7 +56,6 @@ class bookController {
           .limit(size);
         totalBooks = await Book.countDocuments();
       }
-      console.log("Total: " + totalBooks);
       const totalPages = Math.ceil(totalBooks / size);
       res.render("pages/book/bookList", {
         books,
@@ -70,6 +69,35 @@ class bookController {
       console.error("Error:", error);
       res.status(500).send("An error occurred while fetching books.");
     }
+  }
+  // [GET] /book/manage
+  async manage(req, res, next) {
+    const currentPage = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 20;
+    const title = req.query.title || "";
+    let totalBooks;
+    let books;
+    if (title) {
+      books = await Book.find({ title: { $regex: title, $options: "i" } })
+        .skip((currentPage - 1) * size)
+        .limit(size);
+      totalBooks = await Book.countDocuments({
+        title: { $regex: title, $options: "i" },
+      });
+    } else {
+      books = await Book.find()
+        .skip((currentPage - 1) * size)
+        .limit(size);
+      totalBooks = await Book.countDocuments();
+    }
+    const totalPages = Math.ceil(totalBooks / size);
+
+    res.render("pages/book/bookManage", {
+      books,
+      currentPage,
+      totalPages,
+      title,
+    });
   }
 }
 

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Manage Book</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
+  'undefined') category = {}; %>
+
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5">
+      <div class="row align-items-start my-5">
+        <%- include('../../partials/userNav') %>
+        <div class="col-8 text-start ms-5">
+          <h4 class="text-center fw-bold">MANAGE PRODUCTS</h4>
+          <div class="d-flex my-2 justify-content-between align-items-center">
+            <a
+              href="/book/add"
+              class="btn bg-main text-decoration-none text-light"
+              >Add new book</a
+            >
+            <form
+              class="d-flex col-4"
+              role="search"
+              action="/book/manage"
+              method="get"
+            >
+              <input
+                class="form-control me-2 rounded-pill"
+                name="title"
+                type="search"
+                placeholder="Search books here"
+                aria-label="Search"
+              />
+              <button
+                class="btn bg-main btn-outline-light rounded-circle"
+                type="submit"
+              >
+                <i class="fas fa-magnifying-glass icon-custom"></i>
+              </button>
+            </form>
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col" class="text-center">Title</th>
+                <th scope="col" class="text-center">Status</th>
+                <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Stock</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% books.forEach(function(book) { %>
+              <tr>
+                <td class="align-middle text-center fw-bold">
+                  <a
+                    href="/book/<%= book._id %>"
+                    class="align-middle text-decoration-none text-dark d-inline-block text-truncate"
+                    style="max-width: 320px"
+                    ><%= book.title %></a
+                  >
+                </td>
+                <% if(book.quantity_in_stock <= 15) {%>
+                <td class="align-middle text-center fw-medium text-danger">
+                  <span>Sold out</span>
+                </td>
+                <% } else { %>
+                <td class="align-middle text-center fw-medium text-success">
+                  <span>Available</span>
+                </td>
+                <% } %>
+                <td class="align-middle text-center"><%= book.price %></td>
+                <% if(book.quantity_in_stock >=15) { %>
+                <td class="align-middle text-center">
+                  <%= book.quantity_in_stock %>
+                </td>
+                <% } else{ %>
+                <td class="align-middle text-center text-danger fw-medium">
+                  <%= book.quantity_in_stock %>
+                </td>
+                <% } %>
+                <td
+                  class="align-middle d-flex align-items-center justify-content-around"
+                >
+                  <p class="btn bg-success m-0">
+                    <a
+                      class="text-decoration-none text-light"
+                      th:href="/book/update/<%= book._id %>"
+                      >Update</a
+                    >
+                  </p>
+                  <p class="btn bg-danger m-0">
+                    <a
+                      class="text-decoration-none text-light"
+                      th:href="/book/delete/<%= book._id %>"
+                      >Delete</a
+                    >
+                  </p>
+                </td>
+              </tr>
+              <%}) %>
+            </tbody>
+          </table>
+          <% if (totalPages > 1) { %>
+          <nav aria-label="Page navigation" class="mb-5">
+            <ul class="pagination justify-content-center mt-4">
+              <li
+                class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
+              >
+                <a
+                  class="page-link"
+                  href="/book/manage?page=1&title=<%= title %>"
+                  ><i class="fas fa-angle-double-left"></i
+                ></a>
+              </li>
+              <li
+                class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
+              >
+                <a
+                  class="page-link"
+                  href="/book/manage?page=<%= currentPage-1 %>&title=<%= title %>"
+                  ><i class="fas fa-chevron-left"></i
+                ></a>
+              </li>
+              <% for (let pageNum = 1; pageNum <= totalPages; pageNum++) { %>
+              <li
+                class="<%= pageNum == currentPage ? 'page-item active bg-main' : 'page-item' %>"
+              >
+                <a
+                  class="page-link"
+                  href="/book/manage?page=<%= pageNum %>&title=<%= title %>"
+                  ><%= pageNum %></a
+                >
+              </li>
+              <% } %>
+              <li
+                class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
+              >
+                <a
+                  class="page-link"
+                  href="/book/manage?page=<%= currentPage+1 %>&title=<%= title %>"
+                  ><i class="fas fa-chevron-right"></i
+                ></a>
+              </li>
+              <li
+                class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
+              >
+                <a
+                  class="page-link"
+                  href="/book/manage?page=<%= totalPages %>&title=<%= title %>"
+                  ><i class="fas fa-angle-double-right"></i
+                ></a>
+              </li>
+            </ul>
+          </nav>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>
