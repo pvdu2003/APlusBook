@@ -20,7 +20,7 @@ class bookController {
       let books;
       let totalBooks;
       // Only range of price
-      if (from > 0 && to > 0) {
+      if (from > 0 || to > 0) {
         books = await Book.find({
           price: { $gte: from, $lte: to },
         })
