@@ -99,6 +99,12 @@ class bookController {
       title,
     });
   }
+  // [GET] /book/update/:id
+  async update(req, res, next) {
+    const id = req.params.id;
+    const book = await Book.findById(id);
+    res.render("pages/book/bookUpdate", { book });
+  }
 }
 
 module.exports = new bookController();

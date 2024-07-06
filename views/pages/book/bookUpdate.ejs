@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Update Book</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %>
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5">
+      <div class="row align-items-start my-5">
+        <%- include('../../partials/userNav') %>
+
+        <div class="col-8 text-start ms-5">
+          <h4 class="text-center fw-bold">UPDATE BOOK</h4>
+          <form
+            class="container-sm py-4 rounded row g-2"
+            style="max-width: 720px"
+            action="/book/update?_method=PATCH"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <div class="col-md-6">
+              <label for="title" class="form-label">Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                value="<%= book.title %>"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="author" class="form-label">Author</label>
+              <input
+                type="text"
+                class="form-control"
+                id="author"
+                value="<%= book.author %>"
+                required
+              />
+            </div>
+            <div class="col-md-12">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                rows="3"
+                name="description"
+                required
+              >
+              <%= book.description %>
+              </textarea>
+              <p class="text-danger fst-italic err-msg">
+                <%= err.description %>
+              </p>
+            </div>
+
+            <div class="col-md-6">
+              <label for="isbn" class="form-label">ISBN</label>
+              <input
+                type="text"
+                class="form-control"
+                id="isbn"
+                name="isbn"
+                value="<%= book.isbn %>"
+                readonly
+              />
+              <p class="text-danger fst-italic err-msg"><%= err.isbn %></p>
+            </div>
+            <div class="col-md-6">
+              <label for="published_date" class="form-label"
+                >Published Date</label
+              >
+              <input
+                type="date"
+                class="form-control"
+                id="published_date"
+                name="published_date"
+                value="<%= book.published_date.toISOString().slice(0, 10) %>"
+                required
+              />
+              <p class="text-danger fst-italic err-msg">
+                <%= err.published_date %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <label for="publisher" class="form-label">Publisher</label>
+              <input
+                type="text"
+                class="form-control"
+                id="publisher"
+                name="publisher"
+                value="<%= book.publisher %>"
+                required
+              />
+              <p class="text-danger fst-italic err-msg"><%= err.publisher %></p>
+            </div>
+            <div class="col-md-6">
+              <label for="quantity_import" class="form-label"
+                >Quantity imported</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="quantity_import"
+                name="quantity_import"
+                value="<%= book.quantity_import %>"
+                required
+              />
+              <p class="text-danger fst-italic err-msg">
+                <%= err.quantity_import %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <label for="quantity_in_stock" class="form-label"
+                >Quantity in stock</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="quantity_in_stock"
+                name="quantity_in_stock"
+                value="<%= book.quantity_in_stock %>"
+                required
+              />
+              <p class="text-danger fst-italic err-msg">
+                <%= err.quantity_in_stock %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <label for="quantity_sold" class="form-label"
+                >Quantity sold</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="quantity_sold"
+                name="quantity_sold"
+                value="<%= book.quantity_sold %>"
+                readonly
+              />
+              <p class="text-danger fst-italic err-msg">
+                <%= err.quantity_sold %>
+              </p>
+            </div>
+            <select class="form-select">
+              <% categories.forEach(cat => {%>
+                <% if(cat._id === book.cat_id) { %>
+                  <option selected><%= cat.name %></option>                  
+                <%} else { %>
+                  <option ><%= cat.name %></option>              
+              <%}}) %>
+            </select>
+            <div class="col-md-12">
+              <label for="image" class="form-label">Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                class="form-control"
+                id="image"
+                name="image"
+                src="<%= book.image %>"
+                required
+              />
+              <p class="text-danger fst-italic err-msg"><%= err.image %></p>
+            </div>
+            <img src="<%= book.image %>" width="150"></img>
+
+            <div class="d-flex flex-row justify-content-end">
+              <button type="submit" class="btn bg-main mt-3 me-2 text-light">
+                Update
+              </button>
+              <a href="/book/manage" class="btn btn-secondary mt-3 text-light">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>

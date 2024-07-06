@@ -14,7 +14,7 @@ const bookSchema = new Schema(
     publisher: { type: String, required: true },
     quantity_import: { type: Number, required: true },
     quantity_in_stock: { type: Number, required: true },
-    quantity_sold: { type: Number, required: true },
+    quantity_sold: { type: Number, default: 0 },
     title: { type: String, required: true },
     cat_id: {
       type: mongoose.Schema.Types.ObjectId,
