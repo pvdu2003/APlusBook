@@ -105,6 +105,53 @@ class bookController {
     const book = await Book.findById(id);
     res.render("pages/book/bookUpdate", { book });
   }
+  // [PATCH] /book/update/:id
+  async updateHandler(req, res, next) {
+    try {
+      const id = req.params.id;
+      const {
+        title,
+        price,
+        author,
+        category,
+        description,
+        isbn,
+        publisher,
+        published_date,
+        quantity_import,
+        quantity_in_stock,
+        quantity_sold,
+        cat_id,
+      } = req.body;
+      let image;
+      if (req.file) {
+        image = `/images/${req.file.filename}`;
+      } else {
+        // If no new image is uploaded, get the current image URL from the database
+        const currentBook = await Book.findById(id);
+        image = currentBook.image;
+      }
+      const updateBook = await Book.findByIdAndUpdate(id, {
+        title,
+        price,
+        author,
+        category,
+        description,
+        isbn,
+        publisher,
+        published_date,
+        quantity_import,
+        quantity_in_stock,
+        quantity_sold,
+        cat_id,
+        image: image,
+      });
+      res.redirect("/book/manage");
+    } catch (err) {
+      console.error(err);
+      res.render("book/update", { book: req.body, err });
+    }
+  }
 }
 
 module.exports = new bookController();
