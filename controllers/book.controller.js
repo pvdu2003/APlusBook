@@ -120,18 +120,28 @@ class bookController {
         published_date,
         quantity_import,
         quantity_in_stock,
-        quantity_sold,
         cat_id,
       } = req.body;
+      let quantity_sold = quantity_import - quantity_in_stock;
       let image;
+      const book = await Book.findById(id);
+      let err = {};
+
+      if (quantity_sold < 0) {
+        err.quantity_import =
+          "Quantity import must be greater than quantity in stock!";
+        err.quantity_in_stock =
+          "Quantity import must be greater than quantity in stock!";
+        return res.render("pages/book/bookUpdate", { book, err });
+      }
+
       if (req.file) {
         image = `/images/${req.file.filename}`;
       } else {
         // If no new image is uploaded, get the current image URL from the database
-        const currentBook = await Book.findById(id);
-        image = currentBook.image;
+        image = book.image;
       }
-      const updateBook = await Book.findByIdAndUpdate(id, {
+      await Book.findByIdAndUpdate(id, {
         title,
         price,
         author,
@@ -147,9 +157,10 @@ class bookController {
         image: image,
       });
       res.redirect("/book/manage");
-    } catch (err) {
-      console.error(err);
-      res.render("book/update", { book: req.body, err });
+    } catch (error) {
+      next(error);
+      // console.error(error);
+      // res.render("pages/book/bookUpdate", { book: req.body, error });
     }
   }
 }

@@ -166,14 +166,14 @@
               <label for="quantity_sold" class="form-label"
                 >Category</label
               >
-            <select class="form-select" id="cat_id" name="cat_id">
-              <% categories.forEach(cat => {%>
-                <% if(cat._id === book.cat_id) { %>
-                  <option value="<%= book.cat_id %>" selected><%= cat.name %></option>                  
-                <%} else { %>
-                  <option value="<%= book.cat_id %>" ><%= cat.name %></option>              
-              <%}}) %>
-            </select>
+              <select class="form-select" id="cat_id" name="cat_id">
+                <% categories.forEach(cat => {%>
+                  <% if(cat._id.toString() === book.cat_id.toString()) {%>
+                    <option value="<%= cat._id %>" selected><%= cat.name %></option>                  
+                  <%} else { %>
+                    <option value="<%= cat._id %>"><%= cat.name %></option>              
+                <%}}) %>
+              </select>
             </div>
             <div class="col-md-12">
               <label for="image" class="form-label">Image</label>
