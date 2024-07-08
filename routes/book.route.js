@@ -18,6 +18,14 @@ const upload = multer({ storage });
 
 router.get("/list", authMiddleware, bookController.getAll);
 router.get("/manage", authMiddleware, adminMiddleware, bookController.manage);
+router.get("/add", authMiddleware, adminMiddleware, bookController.add);
+router.post(
+  "/add",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  bookController.addHandler
+);
 router.get(
   "/update/:id",
   authMiddleware,

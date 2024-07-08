@@ -113,7 +113,6 @@ class bookController {
         title,
         price,
         author,
-        category,
         description,
         isbn,
         publisher,
@@ -145,7 +144,6 @@ class bookController {
         title,
         price,
         author,
-        category,
         description,
         isbn,
         publisher,
@@ -159,8 +157,62 @@ class bookController {
       res.redirect("/book/manage");
     } catch (error) {
       next(error);
-      // console.error(error);
-      // res.render("pages/book/bookUpdate", { book: req.body, error });
+    }
+  }
+  // [GET] /book/add
+  add(req, res, next) {
+    res.render("pages/book/bookAdd");
+  }
+  // [POST] /book/add
+  async addHandler(req, res, next) {
+    try {
+      const {
+        title,
+        author,
+        description,
+        isbn,
+        published_date,
+        publisher,
+        price,
+        quantity_import,
+        cat_id,
+      } = req.body;
+      const image = `/images/${req.file.filename}`;
+      let err = {};
+      if (Number(isbn).toString() !== isbn.trim()) {
+        err.isbn = "ISBN must be a number!";
+      } else if (isbn.length !== 10) {
+        err.isbn = "ISBN must be 10 digits!";
+      }
+      if (description.length <= 20) {
+        err.description = "Description must be more than 20 characters!";
+      }
+      if (Object.keys(err).length > 0) {
+        return res.render("pages/book/bookAdd", { err, invalid: req.body });
+      }
+      const check = await Book.find({ isbn });
+      if (check.length > 0) {
+        err.isbn = "ISBN already exists!";
+        return res.render("pages/book/bookAdd", { err, invalid: req.body });
+      }
+      const book = new Book({
+        title,
+        author,
+        description,
+        isbn,
+        published_date,
+        publisher,
+        price,
+        quantity_import,
+        quantity_in_stock: quantity_import,
+        quantity_sold: 0,
+        cat_id,
+        image,
+      });
+      await book.save();
+      res.redirect("/book/manage");
+    } catch (error) {
+      next(error);
     }
   }
 }
