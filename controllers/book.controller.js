@@ -215,6 +215,16 @@ class bookController {
       next(error);
     }
   }
+  // [DELETE] /book/delete/:id
+  async deleteHandler(req, res, next) {
+    try {
+      const id = req.params.id;
+      await Book.delete({ _id: id });
+      res.redirect("/book/manage");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new bookController();

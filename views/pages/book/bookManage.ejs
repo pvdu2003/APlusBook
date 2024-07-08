@@ -15,11 +15,25 @@
         <div class="col-8 text-start ms-5">
           <h4 class="text-center fw-bold">MANAGE PRODUCTS</h4>
           <div class="d-flex my-2 justify-content-between align-items-center">
-            <a
-              href="/book/add"
-              class="btn bg-main text-decoration-none text-light"
-              >Add new book</a
-            >
+            <div>
+              <a
+                href="/book/add"
+                class="btn bg-main text-decoration-none text-light"
+                ><i class="fas fa-plus"></i
+              ></a>
+              <a
+                href="/trash"
+                class="btn bg-danger text-decoration-none text-light position-relative"
+              >
+                <i class="fas fa-trash-alt"></i>
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
+                >
+                  <%= trashNum %>
+                  <span class="visually-hidden">unread messages</span>
+                </span>
+              </a>
+            </div>
             <form
               class="d-flex col-4"
               role="search"
@@ -67,7 +81,7 @@
                   <span>Sold out</span>
                 </td>
                 <% } else { %>
-                <td class="align-middle text-center fw-medium text-success">
+                <td class="align-middle text-center fw-medium text-main">
                   <span>Available</span>
                 </td>
                 <% } %>
@@ -84,22 +98,70 @@
                 <td
                   class="align-middle d-flex align-items-center justify-content-around"
                 >
-                  <p class="btn bg-success m-0">
+                  <p class="btn bg-main m-0">
                     <a
                       class="text-decoration-none text-light"
                       href="/book/update/<%= book._id %>"
-                      >Update</a
-                    >
+                      ><i class="fas fa-edit"></i
+                    ></a>
                   </p>
-                  <p class="btn bg-danger m-0">
-                    <a
-                      class="text-decoration-none text-light"
-                      href="/book/delete/<%= book._id %>"
-                      >Delete</a
-                    >
+                  <p
+                    class="btn bg-danger m-0 text-light"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal<%= book._id %>"
+                  >
+                    <i class="fas fa-trash-alt"></i>
                   </p>
                 </td>
               </tr>
+
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="exampleModal<%= book._id %>"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Do you want to delete this book?
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      This book will removed from this list, then moved to trash
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancel
+                      </button>
+                      <form
+                        action="/book/delete/<%= book._id %>?_method=DELETE"
+                        method="post"
+                      >
+                        <button
+                          class="btn bg-danger m-0 text-light"
+                          type="submit"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <%}) %>
             </tbody>
           </table>

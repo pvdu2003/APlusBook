@@ -3,6 +3,7 @@ const router = express.Router();
 const bookController = require("../controllers/book.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 const adminMiddleware = require("../middlewares/admin.middleware");
+const trashMiddleware = require("../middlewares/trash.middleware");
 
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -13,8 +14,8 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-
 const upload = multer({ storage });
+router.use(trashMiddleware);
 
 router.get("/list", authMiddleware, bookController.getAll);
 router.get("/manage", authMiddleware, adminMiddleware, bookController.manage);
@@ -38,6 +39,12 @@ router.patch(
   adminMiddleware,
   upload.single("image"),
   bookController.updateHandler
+);
+router.delete(
+  "/delete/:id",
+  authMiddleware,
+  adminMiddleware,
+  bookController.deleteHandler
 );
 router.get("/:id", authMiddleware, bookController.getById);
 
