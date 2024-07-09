@@ -7,7 +7,18 @@ class userController {
     try {
       let user = req.cookies.user;
       let usr = await User.findById(user._id);
-      res.render("pages/user/profile", { usr });
+      res.render("pages/user/profile", { usr, user });
+    } catch (error) {
+      next(error);
+    }
+  }
+  // [GET] /user/profile/:id
+  async userProfile(req, res, next) {
+    try {
+      let id = req.params.id;
+      let user = req.cookies.user;
+      let usr = await User.findById(id);
+      res.render("pages/user/profile", { usr, user });
     } catch (error) {
       next(error);
     }
@@ -17,7 +28,7 @@ class userController {
     try {
       let user = req.cookies.user;
       let usr = await User.findById(user._id);
-      res.render("pages/user/updateProfile", { usr });
+      res.render("pages/user/updateProfile", { usr, user });
     } catch (error) {
       next(error);
     }
@@ -51,7 +62,8 @@ class userController {
   }
   // [GET] /user/change-password
   changePwd(req, res, next) {
-    res.render("pages/user/changePwd");
+    let user = req.cookies.user;
+    res.render("pages/user/changePwd", { user });
   }
   // [PATCH] /user/change-password
   async changePwdHandler(req, res, next) {
@@ -72,7 +84,7 @@ class userController {
       }
 
       if (Object.keys(err).length > 0) {
-        return res.render("pages/user/changePwd", { err });
+        return res.render("pages/user/changePwd", { err, user });
       }
       const hashedPwd = await bcrypt.hash(new_password, 10);
       const newUser = await User.findByIdAndUpdate(user._id, {
@@ -84,6 +96,12 @@ class userController {
     } catch (err) {
       next(err);
     }
+  }
+  // [GET] /user/manage
+  async manage(req, res, next) {
+    const users = await User.find();
+    let user = req.cookies.user;
+    res.render("pages/user/userManage", { users, user });
   }
 }
 module.exports = new userController();

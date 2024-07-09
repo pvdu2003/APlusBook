@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Manage User</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
+  'undefined') category = {}; %>
+
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5">
+      <div class="row align-items-start my-5">
+        <%- include('../../partials/userNav', {user}) %>
+        <div class="col-9 text-start ms-5">
+          <h4 class="text-center fw-bold">MANAGE USERS</h4>
+
+          <table class="table table-hover">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col" class="text-center">Username</th>
+                <th scope="col" class="text-center">Phonenum</th>
+                <th scope="col" class="text-center">DOB</th>
+                <th scope="col" class="text-center">Email</th>
+                <th scope="col" class="text-center">Role</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(function(user) { %>
+              <tr>
+                <td class="align-middle text-center fw-medium">
+                  <a
+                    class="text-main text-decoration-none"
+                    href="/user/profile/<%= user._id %>"
+                  >
+                    <%= user.username %></a
+                  >
+                </td>
+                <td class="align-middle text-center">
+                  <%= user.phone_num ? user.phone_num : "---" %>
+                </td>
+                <td class="align-middle text-center">
+                  <%= user.dob ? user.dob.toISOString().slice(0, 10) : '---' %>
+                </td>
+                <td class="align-middle text-center"><%= user.email %></td>
+                <% if (user.role === 'admin') { %>
+                <td class="align-middle text-center text-main fw-medium">
+                  <%= user.role %>
+                </td>
+                <% } else { %>
+                <td class="align-middle text-center"><%= user.role %></td>
+                <% } %>
+                <td
+                  class="align-middle d-flex align-items-center justify-content-around"
+                >
+                  <p class="btn bg-main m-0">
+                    <a
+                      class="text-decoration-none text-light"
+                      href="/user/update/<%= user._id %>"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                  </p>
+                  <p
+                    class="btn bg-danger m-0 text-light"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal<%= user._id %>"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="exampleModal<%= user._id %>"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Do you want to delete user
+                        <span class="text-main"><%= user.username %></span>?
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      User
+                      <span class="text-main"><%= user.username %></span> will
+                      removed from this list, then moved to trash
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancel
+                      </button>
+                      <form
+                        action="/user/delete/<%= user._id %>?_method=DELETE"
+                        method="post"
+                      >
+                        <button
+                          class="btn bg-danger m-0 text-light"
+                          type="submit"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <%}) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>

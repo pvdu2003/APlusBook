@@ -72,6 +72,7 @@ class bookController {
   }
   // [GET] /book/manage
   async manage(req, res, next) {
+    let user = req.cookies.user;
     const currentPage = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 20;
     const title = req.query.title || "";
@@ -97,6 +98,7 @@ class bookController {
       currentPage,
       totalPages,
       title,
+      user,
     });
   }
   // [GET] /book/update/:id

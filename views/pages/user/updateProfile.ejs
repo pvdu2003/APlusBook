@@ -9,13 +9,12 @@
     <%- include('../../partials/header') %>
     <div class="container text-center px-5">
       <div class="row align-items-start mt-5">
-        <%- include('../../partials/userNav') %>
+        <%- include('../../partials/userNav', {user: user}) %>
 
-        <div class="col-8 text-start ms-5">
+        <div class="col-9 text-start ms-5">
           <h4 class="text-center fw-bold">UPDATE ACCOUNT</h4>
           <form
             class="container-sm py-4 rounded row g-2"
-            style="max-width: 720px"
             action="/user/update?_method=PATCH"
             method="post"
           >

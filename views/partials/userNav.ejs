@@ -1,4 +1,4 @@
-<div class="col-3 d-flex flex-column border-end border-2">
+<div class="col-2 d-flex flex-column border-end border-2">
   <a href="/user/profile" class="text-dark text-decoration-none py-2 text-start"
     >Account Information</a
   >
@@ -8,19 +8,19 @@
     >Change password</a
   >
   <!-- For admin -->
+  <% if(user.role === "admin") { %>
   <a href="/book/manage" class="text-dark text-decoration-none py-2 text-start"
-    >Manage product</a
+    >Manage books</a
+  >
+  <a href="/user/manage" class="text-dark text-decoration-none py-2 text-start"
+    >Manage users</a
   >
   <a
     href="/admin/manage-orders"
     class="text-dark text-decoration-none py-2 text-start"
     >Manage orders</a
   >
-  <a
-    href="/admin/manage-customers"
-    class="text-dark text-decoration-none py-2 text-start"
-    >Manage customers</a
-  >
+  <% } %>
   <!-- For customers -->
   <a
     href="/user/my-order"
