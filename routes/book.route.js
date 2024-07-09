@@ -40,6 +40,24 @@ router.patch(
   upload.single("image"),
   bookController.updateHandler
 );
+router.get(
+  "/trash",
+  authMiddleware,
+  adminMiddleware,
+  bookController.renderTrash
+);
+router.patch(
+  "/restore/:id",
+  authMiddleware,
+  adminMiddleware,
+  bookController.restore
+);
+router.delete(
+  "/delete/:id/force",
+  authMiddleware,
+  adminMiddleware,
+  bookController.forceDelete
+);
 router.delete(
   "/delete/:id",
   authMiddleware,

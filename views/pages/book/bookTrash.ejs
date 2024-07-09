@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Manage Book</title>
+    <title>Deleted Book</title>
     <%- include('../../partials/main') %>
   </head>
   <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
@@ -13,28 +13,15 @@
       <div class="row align-items-start my-5">
         <%- include('../../partials/userNav') %>
         <div class="col-8 text-start ms-5">
-          <h4 class="text-center fw-bold">MANAGE PRODUCTS</h4>
+          <h4 class="text-center fw-bold">DELETED BOOKS</h4>
           <div class="d-flex my-2 justify-content-between align-items-center">
-            <div>
-              <a
-                href="/book/add"
-                class="btn bg-main text-decoration-none text-light"
-                ><i class="fas fa-plus"></i
-              ></a>
-              <a
-                href="/book/trash"
-                class="btn bg-danger text-decoration-none text-light position-relative"
-              >
-                <i class="fas fa-trash-alt"></i>
-                <span
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
-                >
-                  <%= trashNum %>
-                  <span class="visually-hidden">deleted books</span>
-                </span>
-              </a>
-            </div>
-            <form
+            <a
+              href="/book/manage"
+              class="btn bg-main text-decoration-none text-light"
+              ><i class="fas fa-arrow-left"></i
+            ></a>
+
+            <!-- <form
               class="d-flex col-4"
               role="search"
               action="/book/manage"
@@ -53,8 +40,16 @@
               >
                 <i class="fas fa-magnifying-glass icon-custom"></i>
               </button>
-            </form>
+            </form> -->
           </div>
+          <% if(trashNum === 0) { %>
+          <p class="text-center">
+            No book deleted before!
+            <a class="text-main text-decoration-none" href="/book/manage"
+              >Return book manage page</a
+            >
+          </p>
+          <% } else { %>
           <table class="table table-hover">
             <thead>
               <tr class="table-primary">
@@ -90,7 +85,7 @@
                 <td class="align-middle text-center">
                   <%= book.quantity_in_stock %>
                 </td>
-                <% } else{ %>
+                <% } else { %>
                 <td class="align-middle text-center text-danger fw-medium">
                   <%= book.quantity_in_stock %>
                 </td>
@@ -98,13 +93,14 @@
                 <td
                   class="align-middle d-flex align-items-center justify-content-around"
                 >
-                  <p class="btn bg-main m-0">
-                    <a
-                      class="text-decoration-none text-light"
-                      href="/book/update/<%= book._id %>"
-                      ><i class="fas fa-edit"></i
-                    ></a>
-                  </p>
+                  <form
+                    action="/book/restore/<%= book._id %>?_method=PATCH"
+                    method="post"
+                  >
+                    <button class="btn bg-main text-light m-0" type="submit">
+                      <i class="fas fa-trash-restore-alt"></i>
+                    </button>
+                  </form>
                   <p
                     class="btn bg-danger m-0 text-light"
                     data-bs-toggle="modal"
@@ -127,7 +123,7 @@
                   <div class="modal-content">
                     <div class="modal-header">
                       <h1 class="modal-title fs-5" id="exampleModalLabel">
-                        Do you want to delete this book?
+                        Do you want to delete this book forever?
                       </h1>
                       <button
                         type="button"
@@ -137,7 +133,7 @@
                       ></button>
                     </div>
                     <div class="modal-body">
-                      This book will removed from this list, then moved to trash
+                      This book will removed from this list forever!
                     </div>
                     <div class="modal-footer">
                       <button
@@ -148,7 +144,7 @@
                         Cancel
                       </button>
                       <form
-                        action="/book/delete/<%= book._id %>?_method=DELETE"
+                        action="/book/delete/<%= book._id %>/force?_method=DELETE"
                         method="post"
                       >
                         <button
@@ -162,61 +158,9 @@
                   </div>
                 </div>
               </div>
-              <%}) %>
+              <% }) %>
             </tbody>
           </table>
-          <% if (totalPages > 1) { %>
-          <nav aria-label="Page navigation" class="mb-5">
-            <ul class="pagination justify-content-center mt-4">
-              <li
-                class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
-              >
-                <a
-                  class="page-link"
-                  href="/book/manage?page=1&title=<%= title %>"
-                  ><i class="fas fa-angle-double-left"></i
-                ></a>
-              </li>
-              <li
-                class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
-              >
-                <a
-                  class="page-link"
-                  href="/book/manage?page=<%= currentPage-1 %>&title=<%= title %>"
-                  ><i class="fas fa-chevron-left"></i
-                ></a>
-              </li>
-              <% for (let pageNum = 1; pageNum <= totalPages; pageNum++) { %>
-              <li
-                class="<%= pageNum == currentPage ? 'page-item active bg-main' : 'page-item' %>"
-              >
-                <a
-                  class="page-link"
-                  href="/book/manage?page=<%= pageNum %>&title=<%= title %>"
-                  ><%= pageNum %></a
-                >
-              </li>
-              <% } %>
-              <li
-                class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
-              >
-                <a
-                  class="page-link"
-                  href="/book/manage?page=<%= currentPage+1 %>&title=<%= title %>"
-                  ><i class="fas fa-chevron-right"></i
-                ></a>
-              </li>
-              <li
-                class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
-              >
-                <a
-                  class="page-link"
-                  href="/book/manage?page=<%= totalPages %>&title=<%= title %>"
-                  ><i class="fas fa-angle-double-right"></i
-                ></a>
-              </li>
-            </ul>
-          </nav>
           <% } %>
         </div>
       </div>

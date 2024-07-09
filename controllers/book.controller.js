@@ -225,6 +225,30 @@ class bookController {
       next(error);
     }
   }
+  // [DELETE] /book/delete/:id/force
+  async forceDelete(req, res, next) {
+    try {
+      const id = req.params.id;
+      await Book.deleteOne({ _id: id });
+      res.redirect("/book/manage");
+    } catch (error) {
+      next(error);
+    }
+  }
+  // [GET] /book/trash
+  async renderTrash(req, res, next) {
+    const books = await Book.findWithDeleted({ deleted: true });
+    res.render("pages/book/bookTrash", { books });
+  }
+  // [PATCH] /book/restore/:id
+  async restore(req, res, next) {
+    try {
+      await Book.restore({ _id: req.params.id });
+      res.redirect("/book/manage");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new bookController();
