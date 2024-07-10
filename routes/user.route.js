@@ -3,7 +3,9 @@ const router = express.Router();
 const userController = require("../controllers/user.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 const adminMiddleware = require("../middlewares/admin.middleware");
+const userTrashMiddleware = require("../middlewares/userTrash.middleware");
 
+router.use(userTrashMiddleware);
 router.get(
   "/profile/:id",
   authMiddleware,
@@ -19,8 +21,30 @@ router.patch(
   authMiddleware,
   userController.changePwdHandler
 );
-router.get("/manage", userController.manage);
+router.get("/manage", authMiddleware, adminMiddleware, userController.manage);
+router.get(
+  "/trash",
+  authMiddleware,
+  adminMiddleware,
+  userController.renderTrash
+);
 // router.post("/update-role", userController.updateRole);
-// router.delete("/delete-user/:id", userController.deleteUser);
-
+router.delete(
+  "/delete/:id/force",
+  authMiddleware,
+  adminMiddleware,
+  userController.forceDelete
+);
+router.delete(
+  "/delete/:id",
+  authMiddleware,
+  adminMiddleware,
+  userController.deleteHandler
+);
+router.patch(
+  "/restore/:id",
+  authMiddleware,
+  adminMiddleware,
+  userController.restore
+);
 module.exports = router;

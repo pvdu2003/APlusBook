@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Manage User</title>
+    <title>Deleted User</title>
     <%- include('../../partials/main') %>
   </head>
   <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
@@ -11,23 +11,17 @@
     <%- include('../../partials/header') %>
     <div class="container text-center px-5">
       <div class="row align-items-start my-5">
-        <%- include('../../partials/userNav', {user}) %>
-        <div class="col-9 text-start ms-5">
-          <h4 class="text-center fw-bold">MANAGE USERS</h4>
+        <%- include('../../partials/userNav') %>
+        <div class="col-8 text-start ms-5">
+          <h4 class="text-center fw-bold">DELETED USERS</h4>
           <div class="d-flex my-2 justify-content-between align-items-center">
             <a
-              href="/user/trash"
-              class="btn bg-danger text-decoration-none text-light position-relative"
-            >
-              <i class="fas fa-trash-alt"></i>
-              <span
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
-              >
-                <%= userTrash %>
-                <span class="visually-hidden">deleted users</span>
-              </span>
-            </a>
-            <form
+              href="/user/manage"
+              class="btn bg-main text-decoration-none text-light"
+              ><i class="fas fa-arrow-left"></i
+            ></a>
+
+            <!-- <form
               class="d-flex col-4"
               role="search"
               action="/user/manage"
@@ -46,8 +40,16 @@
               >
                 <i class="fas fa-magnifying-glass icon-custom"></i>
               </button>
-            </form>
+            </form> -->
           </div>
+          <% if(userTrash === 0) { %>
+          <p class="text-center">
+            No user deleted before!
+            <a class="text-main text-decoration-none" href="/user/manage"
+              >Return user manage page</a
+            >
+          </p>
+          <% } else { %>
           <table class="table table-hover">
             <thead>
               <tr class="table-primary">
@@ -87,13 +89,14 @@
                 <td
                   class="align-middle d-flex align-items-center justify-content-around"
                 >
-                  <p class="btn bg-main m-0">
-                    <a
-                      class="text-decoration-none text-light"
-                      href="/user/update/<%= user._id %>"
-                      ><i class="fas fa-edit"></i
-                    ></a>
-                  </p>
+                  <form
+                    action="/user/restore/<%= user._id %>?_method=PATCH"
+                    method="post"
+                  >
+                    <button class="btn bg-main text-light m-0" type="submit">
+                      <i class="fas fa-trash-restore-alt"></i>
+                    </button>
+                  </form>
                   <p
                     class="btn bg-danger m-0 text-light"
                     data-bs-toggle="modal"
@@ -117,7 +120,8 @@
                     <div class="modal-header">
                       <h1 class="modal-title fs-5" id="exampleModalLabel">
                         Do you want to delete user
-                        <span class="text-main"><%= user.username %></span>?
+                        <span class="text-main"><%= user.username %></span>
+                        forever?
                       </h1>
                       <button
                         type="button"
@@ -129,7 +133,7 @@
                     <div class="modal-body">
                       User
                       <span class="text-main"><%= user.username %></span> will
-                      removed from this list, then moved to trash
+                      removed from this list forever!
                     </div>
                     <div class="modal-footer">
                       <button
@@ -140,7 +144,7 @@
                         Cancel
                       </button>
                       <form
-                        action="/user/delete/<%= user._id %>?_method=DELETE"
+                        action="/user/delete/<%= user._id %>/force?_method=DELETE"
                         method="post"
                       >
                         <button
@@ -157,6 +161,7 @@
               <%}) %>
             </tbody>
           </table>
+          <% } %>
         </div>
       </div>
     </div>

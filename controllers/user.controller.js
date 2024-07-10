@@ -99,9 +99,44 @@ class userController {
   }
   // [GET] /user/manage
   async manage(req, res, next) {
-    const users = await User.find();
+    const users = await User.find({ role: "user" });
     let user = req.cookies.user;
     res.render("pages/user/userManage", { users, user });
+  }
+  // [GET] /user/trash
+  async renderTrash(req, res, next) {
+    let user = req.cookies.user;
+    const users = await User.findWithDeleted({ deleted: true });
+    res.render("pages/user/userTrash", { users, user });
+  }
+  // [DELETE] /user/delete/:id
+  async deleteHandler(req, res, next) {
+    try {
+      const id = req.params.id;
+      await User.delete({ _id: id });
+      res.redirect("/user/manage");
+    } catch (error) {
+      next(error);
+    }
+  }
+  // [DELETE] /user/delete/:id/force
+  async forceDelete(req, res, next) {
+    try {
+      const id = req.params.id;
+      await User.deleteOne({ _id: id });
+      res.redirect("/user/manage");
+    } catch (error) {
+      next(error);
+    }
+  }
+  // [PATCH] /user/restore/:id
+  async restore(req, res, next) {
+    try {
+      await User.restore({ _id: req.params.id });
+      res.redirect("/user/manage");
+    } catch (error) {
+      next(error);
+    }
   }
 }
 module.exports = new userController();
