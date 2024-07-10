@@ -1,4 +1,3 @@
-const Category = require("../models/category.schema");
 const Book = require("../models/book.schema");
 
 class bookController {
@@ -103,13 +102,15 @@ class bookController {
   }
   // [GET] /book/update/:id
   async update(req, res, next) {
+    let user = req.cookies.user;
     const id = req.params.id;
     const book = await Book.findById(id);
-    res.render("pages/book/bookUpdate", { book });
+    res.render("pages/book/bookUpdate", { book, user });
   }
   // [PATCH] /book/update/:id
   async updateHandler(req, res, next) {
     try {
+      let user = req.cookies.user;
       const id = req.params.id;
       const {
         title,
@@ -133,7 +134,7 @@ class bookController {
           "Quantity import must be greater than quantity in stock!";
         err.quantity_in_stock =
           "Quantity import must be greater than quantity in stock!";
-        return res.render("pages/book/bookUpdate", { book, err });
+        return res.render("pages/book/bookUpdate", { book, err, user });
       }
 
       if (req.file) {
@@ -163,11 +164,13 @@ class bookController {
   }
   // [GET] /book/add
   add(req, res, next) {
-    res.render("pages/book/bookAdd");
+    let user = req.cookies.user;
+    res.render("pages/book/bookAdd", { user });
   }
   // [POST] /book/add
   async addHandler(req, res, next) {
     try {
+      let user = req.cookies.user;
       const {
         title,
         author,
@@ -190,12 +193,20 @@ class bookController {
         err.description = "Description must be more than 20 characters!";
       }
       if (Object.keys(err).length > 0) {
-        return res.render("pages/book/bookAdd", { err, invalid: req.body });
+        return res.render("pages/book/bookAdd", {
+          user,
+          err,
+          invalid: req.body,
+        });
       }
       const check = await Book.find({ isbn });
       if (check.length > 0) {
         err.isbn = "ISBN already exists!";
-        return res.render("pages/book/bookAdd", { err, invalid: req.body });
+        return res.render("pages/book/bookAdd", {
+          user,
+          err,
+          invalid: req.body,
+        });
       }
       const book = new Book({
         title,
@@ -239,8 +250,9 @@ class bookController {
   }
   // [GET] /book/trash
   async renderTrash(req, res, next) {
+    let user = req.cookies.user;
     const books = await Book.findWithDeleted({ deleted: true });
-    res.render("pages/book/bookTrash", { books });
+    res.render("pages/book/bookTrash", { books, user });
   }
   // [PATCH] /book/restore/:id
   async restore(req, res, next) {
