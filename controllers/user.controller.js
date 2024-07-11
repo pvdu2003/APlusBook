@@ -97,10 +97,18 @@ class userController {
       next(err);
     }
   }
-  // [GET] /user/manage
+  // [GET] /user/manage?username
   async manage(req, res, next) {
-    const users = await User.find({ role: "user" });
+    let username = req.query.username || "";
     let user = req.cookies.user;
+    let users;
+    if (username) {
+      users = await User.find({
+        username: { $regex: username, $options: "i" },
+      });
+      return res.render("pages/user/userManage", { users, user });
+    }
+    users = await User.find({});
     res.render("pages/user/userManage", { users, user });
   }
   // [GET] /user/trash

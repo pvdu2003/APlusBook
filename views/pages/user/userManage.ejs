@@ -9,7 +9,7 @@
 
   <body>
     <%- include('../../partials/header') %>
-    <div class="container text-center px-5">
+    <div class="container text-center px-5 pb-3">
       <div class="row align-items-start my-5">
         <%- include('../../partials/userNav', {user}) %>
         <div class="col-9 text-start ms-5">
@@ -48,6 +48,7 @@
               </button>
             </form>
           </div>
+          <% if(users.length > 0 ) { %>
           <table class="table table-hover">
             <thead>
               <tr class="table-primary">
@@ -84,23 +85,26 @@
                 <% } else { %>
                 <td class="align-middle text-center"><%= user.role %></td>
                 <% } %>
-                <td
-                  class="align-middle d-flex align-items-center justify-content-around"
-                >
-                  <p class="btn bg-main m-0">
-                    <a
-                      class="text-decoration-none text-light"
-                      href="/user/update/<%= user._id %>"
-                      ><i class="fas fa-edit"></i
-                    ></a>
-                  </p>
-                  <p
-                    class="btn bg-danger m-0 text-light"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal<%= user._id %>"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </p>
+                <td class="align-middle" style="width: 120px">
+                  <div>
+                    <p class="btn bg-main m-0">
+                      <a
+                        class="text-decoration-none text-light"
+                        href="/user/profile/<%= user._id %>"
+                        ><i class="fas fa-eye"></i
+                      ></a>
+                    </p>
+                    <!-- Only delete user, can't delete admin -->
+                    <% if (user.role !== 'admin') { %>
+                    <p
+                      class="btn bg-danger text-light m-0"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal<%= user._id %>"
+                    >
+                      <i class="fas fa-trash-alt"></i>
+                    </p>
+                    <% } %>
+                  </div>
                 </td>
               </tr>
 
@@ -157,6 +161,14 @@
               <%}) %>
             </tbody>
           </table>
+          <% } else { %>
+          <p class="text-center mt-4">
+            No user found.
+            <a class="text-main text-decoration-none" href="/user/manage"
+              >Return user list</a
+            >
+          </p>
+          <% } %>
         </div>
       </div>
     </div>
