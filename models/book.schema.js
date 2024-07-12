@@ -18,8 +18,8 @@ const bookSchema = new Schema(
     quantity_sold: { type: Number, default: 0 },
     title: { type: String, required: true },
     cat_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      type: objectId,
+      ref: "category",
       required: true,
     },
   },

@@ -1,74 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Login Form</title>
+    <title>Book Detail</title>
     <%- include('../../partials/main') %>
   </head>
   <% if (typeof err === 'undefined') err = {}; %>
   <body>
     <%- include('../../partials/header') %>
-    <div class="container text-center d-flex flex-row mt-4">
-      <div class="col-7">
-        <div class="row">
-          <div class="col-5 py-3 border">
-            <img
-              src="<%= book.image%>"
-              alt="Book image"
-              class="card-img-top"
-              alt="Image book detail"
-            />
+    <div class="container px-5 mx-5 mt-4">
+      <div class="row px-5 mx-5">
+        <div class="col-5 py-3 mb-5 border">
+          <img
+            src="<%= book.image%>"
+            alt="Book image"
+            class="card-img-top"
+            alt="Image book detail"
+          />
+        </div>
+        <div class="col-7 pt-4 ps-5">
+          <h5><%= book.title%></h5>
+          <div class="d-flex row">
+            <p class="col-6">
+              Quantity sold:
+              <span class="text-main fw-medium"><%= book.quantity_sold%></span>
+            </p>
+            <p class="col-6">
+              Quantity in stock:
+              <span class="text-main fw-medium"
+                ><%= book.quantity_in_stock%></span
+              >
+            </p>
           </div>
-          <div class="col-7 pt-4 px-4">
-            <div>
-              <h5><%= book.title%></h5>
-              <div class="d-flex align-items-end">
-                <h5 class="text-main" style="width: 8rem">
-                  <%= book.price%> $
-                </h5>
-              </div>
-              <div class="my-4">
-                <h6 class="d-block">
-                  Quantity:
-                  <input
-                    class="text-center"
-                    type="number"
-                    value="1"
-                    min="0"
-                    max="20"
-                    step="1"
-                  />
-                </h6>
-              </div>
-              <div class="py-2">
-                <a
-                  class="btn btn-success"
-                  style="width: 10rem"
-                  href="/cart/checkout"
-                  >Buy Now</a
-                >
-                <a
-                  class="btn btn-primary"
-                  style="width: 10rem; background-color: white; color: #07689f"
-                  href="/my-cart"
-                  >Add to cart</a
-                >
-              </div>
-
-              <div class="mt-3">
-                <h6>Sold: <%= book.quantity_sold%></h6>
-                <h6>Stock: <%= book.quantity_in_stock%></h6>
+          <div class="d-flex align-items-end">
+            <h5 class="text-main">Price: <%= book.price%> $</h5>
+          </div>
+          <form action="/cart/add" method="post">
+            <div class="form-group d-flex flex-row align-items-center">
+              <input type="hidden" name="book_id" value="<%= book._id %>" />
+              <input type="hidden" name="title" value="<%= book.title %>" />
+              <label for="quantity">Quantity:</label>
+              <div class="input-group ms-3" style="width: 8rem">
+                <div class="input-group-prepend">
+                  <button
+                    class="btn btn-sm"
+                    type="button"
+                    onclick="decrementQuantity()"
+                  >
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+                <input
+                  type="number"
+                  class="form-control form-control-sm border-0 text-center"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  value="1"
+                  required
+                />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-sm"
+                    type="button"
+                    onclick="incrementQuantity()"
+                  >
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
               </div>
             </div>
+            <button class="btn btn-main-outline mt-3" type="submit">
+              Add to cart
+            </button>
+          </form>
+          <div class="d-flex row mt-4">
+            <h3>Book Detail</h3>
+            <hr />
+            <p class="col-6">
+              Author:
+              <span class="text-main fw-medium"><%= book.author %></span>
+            </p>
+            <p class="col-6">
+              Publisher:
+              <span class="text-main fw-medium"><%= book.publisher %></span>
+            </p>
+            <p class="col-6">
+              ISBN: <span class="text-main fw-medium"><%= book.isbn %></span>
+            </p>
+            <p class="col-6">
+              Category:
+              <span class="text-main fw-medium"> <%= book.cat_id.name %></span>
+            </p>
+            <p class="col-6">
+              Quantity sold:
+              <span class="text-main fw-medium"><%= book.quantity_sold%></span>
+            </p>
+            <p class="col-6">
+              Quantity in stock:
+              <span class="text-main fw-medium"
+                ><%= book.quantity_in_stock%></span
+              >
+            </p>
+            <p>
+              Book Description:
+              <span class="text-main fw-medium"><%=book.description %></span>
+            </p>
           </div>
-        </div>
-      </div>
-      <div class="col border ms-2">
-        <div class="py-4 px-4" style="height: 300px">
-          <h6>Book Description</h6>
-          <p><%=book.description %></p>
         </div>
       </div>
     </div>
     <%- include('../../partials/footer') %>
   </body>
+  <script>
+    function decrementQuantity() {
+      let quantityInput = document.getElementById("quantity");
+      let currentValue = parseInt(quantityInput.value);
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+      }
+    }
+
+    function incrementQuantity() {
+      let quantityInput = document.getElementById("quantity");
+      let currentValue = parseInt(quantityInput.value);
+      quantityInput.value = currentValue + 1;
+    }
+  </script>
 </html>

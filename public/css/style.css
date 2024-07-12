@@ -1,4 +1,5 @@
-.bg-main {
+.bg-main,
+.btn.bg-main {
   background-color: #07689f;
 }
 .bg-main-lighter {
@@ -19,9 +20,12 @@
 .err-msg {
   font-size: 12px;
 }
-.btn.bg-main {
-  background-color: #07689f;
+.btn.btn-main-outline {
+  background-color: white;
+  border: #07689f 1px solid;
+  padding: 8px 24p;
 }
+
 .btn-sm.bg-main:hover,
 .btn-sm.bg-main:focus,
 .btn.bg-main:hover,
@@ -48,4 +52,14 @@
 
 .pagination .page-item.disabled .page-link {
   opacity: 0.5; /* Set the desired opacity for disabled links */
+}
+/* Hide the up/down buttons in the quantity input field */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
