@@ -3,18 +3,55 @@ const Cart = require("../models/cart.schema");
 class cartController {
   // [GET] /cart/list
   async getAll(req, res, next) {
-    try {
-      res.send("Cart list!!!");
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).send("An error occurred while fetching books.");
-    }
+    const user = req.cookies.user;
+    Cart.findOne({ user_id: user._id })
+      .populate({
+        path: "carts.book_id",
+        model: "book",
+        select: "title author price image",
+      })
+      .then((cart) => {
+        if (!cart) {
+          return res.status(404).json({ message: "Cart not found" });
+        }
+
+        // Group the carts by publisher
+        const cartsByPublisher = cart.carts.reduce((acc, item) => {
+          if (!acc[item.publisher]) {
+            acc[item.publisher] = {
+              publisher: item.publisher,
+              books: [],
+              totalBooks: 0,
+              totalPrice: 0,
+            };
+          }
+
+          acc[item.publisher].books.push({
+            ...item.toObject(),
+            author: item.book_id.author,
+            genre: item.book_id.genre,
+            price: item.book_id.price,
+          });
+          acc[item.publisher].totalBooks += item.quantity;
+          acc[item.publisher].totalPrice += item.book_id.price * item.quantity;
+
+          return acc;
+        }, {});
+
+        // Convert the object to an array
+        const result = Object.values(cartsByPublisher);
+        res.render("pages/cart/myCart", { carts: result });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+      });
   }
   // [POST] /cart/add
   async addHandler(req, res, next) {
     try {
       let user = req.cookies.user;
-      const { book_id, title, quantity } = req.body;
+      const { book_id, title, quantity, publisher } = req.body;
       let cart = await Cart.findOne({ user_id: user._id });
       if (!cart) {
         cart = new Cart({ user_id: user._id, carts: [] });
@@ -29,7 +66,7 @@ class cartController {
         );
         return res.redirect("/cart/list");
       }
-      cart.carts.push({ book_id, title, quantity });
+      cart.carts.push({ book_id, title, publisher, quantity });
       await cart.save();
       res.redirect("/cart/list");
     } catch (error) {

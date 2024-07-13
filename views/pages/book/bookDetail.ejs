@@ -38,6 +38,11 @@
             <div class="form-group d-flex flex-row align-items-center">
               <input type="hidden" name="book_id" value="<%= book._id %>" />
               <input type="hidden" name="title" value="<%= book.title %>" />
+              <input
+                type="hidden"
+                name="publisher"
+                value="<%= book.publisher %>"
+              />
               <label for="quantity">Quantity:</label>
               <div class="input-group ms-3" style="width: 8rem">
                 <div class="input-group-prepend">

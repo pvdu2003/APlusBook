@@ -14,7 +14,8 @@ const cartSchema = new Schema(
       {
         _id: { type: objectId, auto: true },
         book_id: { type: objectId, ref: "book" },
-        title: { type: String, ref: "book" },
+        title: { type: String },
+        publisher: { type: String },
         quantity: { type: Number, required: true },
         addedAt: { type: Date, default: Date.now },
       },
