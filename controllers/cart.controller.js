@@ -12,7 +12,7 @@ class cartController {
       })
       .then((cart) => {
         if (!cart) {
-          return res.status(404).json({ message: "Cart not found" });
+          return res.render("pages/cart/myCart", { carts: [] });
         }
 
         // Group the carts by publisher
@@ -76,6 +76,12 @@ class cartController {
   // [DELETE] /book/delete/:id
   async deleteHandler(req, res, next) {
     try {
+      let id = req.params.id;
+      const user = req.cookies.user;
+      const cart = await Cart.findOne({ user_id: user._id });
+      cart.carts = cart.carts.filter((cart) => cart._id.toString() !== id);
+      await cart.save();
+      res.redirect("/cart/list");
     } catch (error) {
       next(error);
     }

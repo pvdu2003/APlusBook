@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Book List</title>
+    <title>Cart List</title>
     <%- include('../../partials/main') %>
   </head>
   <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
@@ -11,11 +11,20 @@
   <body>
     <%- include('../../partials/header') %>
     <div class="container text-center d-flex flex-row my-4">
-      <div class="container text-center p-2 border">
-        <div class="row align-items-start">
-          <div class="col-sm-1">
-            <input class="form-check-input" type="checkbox" value="" />
-          </div>
+      <% if(carts.length <= 0 ) { %>
+      <div class="d-flex align-items-center flex-column w-100 mt-3">
+        <img class="w-50" src="/empty_cart.jpg" alt="Empty cart" />
+        <p class="text-center">
+          Your cart is empty!!
+          <a class="text-main text-decoration-none" href="/book/list"
+            >Explore now!</a
+          >
+        </p>
+      </div>
+      <% } else { %>
+      <div class="container text-center p-2 border mb-5">
+        <div class="row align-items-start px-2">
+          <div class="col-sm-1"></div>
           <div class="col-lg-4">Products</div>
           <div class="col-sm-2">Price</div>
           <div class="col-sm-2">Quantity</div>
@@ -23,43 +32,61 @@
           <div class="col-sm-1">Action</div>
         </div>
         <% carts.forEach(cart => { %>
-
-        <div class="container text-center p-2 mt-3 border">
+        <div class="container text-center p-2 my-3 border">
           <div class="row align-items-start">
-            <div class="col-sm-1">
-              <input class="form-check-input" type="checkbox" value="" />
-            </div>
-            <div class="col-lg-3 text-start"><%= cart.publisher %></div>
-          </div>
-        </div>
-
-        <ul class="list-group list-group-flush py-2 mt-3 border text-center">
-          <% cart.books.forEach(book => { %>
-
-          <li class="d-flex align-items-center list-group-item p-0 py-2">
-            <div class="col-sm-1">
-              <input class="form-check-input" type="checkbox" value="" />
-            </div>
-            <div class="col-lg-4 d-flex align-items-center ms-2">
-              <img
-                class="object-fit-cover border rounded"
-                style="height: 75px; width: 60px"
-                src="<%= book.book_id.image %>"
-                alt="Ảnh sách"
+            <div class="col-sm-1 ps-4">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value="<%=cart.publisher%>"
               />
-              <h5 class="ms-2"><%= book.title %></h5>
             </div>
-            <div class="col-sm-2"><%= book.book_id.price %></div>
-            <div class="col-sm-2"><%= book.quantity %></div>
-            <div class="col-sm-2">30.666</div>
-            <div class="col-sm-1">
-              <a href="#"><i class="fa-solid fa-trash text-danger"></i></a>
+            <div class="col-lg-3 text-start text-main fw-medium">
+              <%= cart.publisher %>
             </div>
-          </li>
-          <% }); %>
-        </ul>
+          </div>
+          <hr />
+          <ul class="list-group list-group-flush text-center">
+            <% cart.books.forEach(book => { %>
+            <li class="d-flex align-items-center list-group-item p-0 py-2">
+              <div class="col-sm-1">
+                <input class="form-check-input" type="checkbox" value="" />
+              </div>
+              <div class="col-lg-4 d-flex align-items-center ms-2">
+                <img
+                  class="object-fit-cover border rounded"
+                  style="height: 75px; width: 60px"
+                  src="<%= book.book_id.image %>"
+                  alt="Ảnh sách"
+                />
+                <a
+                  href="/book/<%= book.book_id._id %>"
+                  class="ms-2 fw-medium text-main text-start text-decoration-none"
+                >
+                  <%= book.title %>
+                </a>
+              </div>
+              <div class="col-sm-2"><%= book.book_id.price %></div>
+              <div class="col-sm-2"><%= book.quantity %></div>
+              <div class="col-sm-2">
+                <%= (book.book_id.price * book.quantity).toFixed(2) %>
+              </div>
+              <form
+                class="col-sm-1"
+                action="/cart/delete/<%= book._id %>?_method=DELETE"
+                method="post"
+              >
+                <button class="btn" type="submit">
+                  <i class="fa-solid fa-trash text-danger"></i>
+                </button>
+              </form>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
         <% }); %>
       </div>
+      <% } %>
     </div>
     <%- include('../../partials/footer') %>
   </body>
