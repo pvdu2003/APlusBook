@@ -25,7 +25,7 @@
       <div class="container text-center p-2 border mb-5">
         <div class="row align-items-start px-2">
           <div class="col-sm-1"></div>
-          <div class="col-lg-4">Products</div>
+          <div class="col-sm-4">Products</div>
           <div class="col-sm-2">Price</div>
           <div class="col-sm-2">Quantity</div>
           <div class="col-sm-2">Total Price</div>
@@ -36,12 +36,13 @@
           <div class="row align-items-start">
             <div class="col-sm-1 ps-4">
               <input
-                class="form-check-input"
+                class="form-check-input publisher-checkbox"
                 type="checkbox"
                 value="<%=cart.publisher%>"
+                onchange="handlePublisherCheckboxChange(this)"
               />
             </div>
-            <div class="col-lg-3 text-start text-main fw-medium">
+            <div class="col-sm-8 text-start text-main fw-medium">
               <%= cart.publisher %>
             </div>
           </div>
@@ -50,7 +51,13 @@
             <% cart.books.forEach(book => { %>
             <li class="d-flex align-items-center list-group-item p-0 py-2">
               <div class="col-sm-1">
-                <input class="form-check-input" type="checkbox" value="" />
+                <input
+                  class="form-check-input book-checkbox"
+                  type="checkbox"
+                  value="<%= book._id %>"
+                  data-publisher="<%=cart.publisher%>"
+                  onchange="updateTotalFee()"
+                />
               </div>
               <div class="col-lg-4 d-flex align-items-center ms-2">
                 <img
@@ -85,9 +92,54 @@
           </ul>
         </div>
         <% }); %>
+        <form id="checkout-form" action="/order/checkout" method="post">
+          <div id="total-fee-container" class="container text-end mt-3 d-none">
+            <p>
+              Total fee:
+              <span id="total-fee" class="text-main fw-medium">0.00</span>$
+            </p>
+            <button class="btn bg-main text-light" type="submit">
+              Buy Now
+            </button>
+          </div>
+        </form>
       </div>
       <% } %>
     </div>
     <%- include('../../partials/footer') %>
   </body>
+  <script>
+    function handlePublisherCheckboxChange(publisherCheckbox) {
+      const bookCheckboxes = document.querySelectorAll(
+        `.book-checkbox[data-publisher="${publisherCheckbox.value}"]`
+      );
+      bookCheckboxes.forEach((checkbox) => {
+        checkbox.checked = publisherCheckbox.checked;
+      });
+      updateTotalFee();
+    }
+    function updateTotalFee() {
+      const checkedBookCheckboxes = document.querySelectorAll(
+        ".book-checkbox:checked"
+      );
+      let totalFee = 0;
+      checkedBookCheckboxes.forEach((checkbox) => {
+        const itemPrice = parseFloat(
+          checkbox.closest("li").querySelector(".col-sm-2:nth-child(5)")
+            .textContent
+        );
+        totalFee += itemPrice;
+      });
+
+      const totalFeeContainer = document.getElementById("total-fee-container");
+      const totalFeeElement = document.getElementById("total-fee");
+
+      if (checkedBookCheckboxes.length > 0) {
+        totalFeeContainer.classList.remove("d-none");
+        totalFeeElement.textContent = totalFee.toFixed(2);
+      } else {
+        totalFeeContainer.classList.add("d-none");
+      }
+    }
+  </script>
 </html>
