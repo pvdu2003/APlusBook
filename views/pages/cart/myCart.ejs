@@ -60,6 +60,11 @@
                 />
               </div>
               <div class="col-lg-4 d-flex align-items-center ms-2">
+                <input
+                  type="hidden"
+                  name="id"
+                  value="<%= book.book_id._id %>"
+                />
                 <img
                   class="object-fit-cover border rounded"
                   style="height: 75px; width: 60px"
@@ -102,6 +107,7 @@
               Buy Now
             </button>
           </div>
+          <input type="hidden" id="selected-books" name="selectedBooks" />
         </form>
       </div>
       <% } %>
@@ -123,22 +129,44 @@
         ".book-checkbox:checked"
       );
       let totalFee = 0;
+      const selectedBookIds = [];
+
       checkedBookCheckboxes.forEach((checkbox) => {
+        const bookId = checkbox
+          .closest("li")
+          .querySelector(".col-lg-4 > input").value;
+        const title = checkbox
+          .closest("li")
+          .querySelector(".col-lg-4 > a")
+          .textContent.trim();
+
         const itemPrice = parseFloat(
-          checkbox.closest("li").querySelector(".col-sm-2:nth-child(5)")
+          checkbox.closest("li").querySelector(".col-sm-2:nth-child(3)")
             .textContent
         );
-        totalFee += itemPrice;
+        const itemQuantity = parseFloat(
+          checkbox.closest("li").querySelector(".col-sm-2:nth-child(4)")
+            .textContent
+        );
+        totalFee += itemPrice * itemQuantity;
+        selectedBookIds.push({
+          _id: bookId,
+          title: title,
+          quantity: itemQuantity,
+          itemPrice: itemPrice,
+        });
       });
-
       const totalFeeContainer = document.getElementById("total-fee-container");
       const totalFeeElement = document.getElementById("total-fee");
+      const selectedBooksInput = document.getElementById("selected-books");
 
       if (checkedBookCheckboxes.length > 0) {
         totalFeeContainer.classList.remove("d-none");
         totalFeeElement.textContent = totalFee.toFixed(2);
+        selectedBooksInput.value = JSON.stringify(selectedBookIds);
       } else {
         totalFeeContainer.classList.add("d-none");
+        selectedBooksInput.value = "";
       }
     }
   </script>

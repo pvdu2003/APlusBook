@@ -28,9 +28,8 @@ class cartController {
 
           acc[item.publisher].books.push({
             ...item.toObject(),
-            author: item.book_id.author,
-            genre: item.book_id.genre,
-            price: item.book_id.price,
+            // author: item.book_id.author,
+            // price: item.book_id.price,
           });
           acc[item.publisher].totalBooks += item.quantity;
           acc[item.publisher].totalPrice += item.book_id.price * item.quantity;
