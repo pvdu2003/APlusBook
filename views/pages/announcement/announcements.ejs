@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Announcements</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if(typeof user === 'undefined') user = {} %> <% if(typeof announcements ===
+  'undefined') announcements = {} %>
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5 mt-4">
+      <% if(announcements.length <=0) { %>
+      <p>
+        No announcement here!
+        <a class="text-main text-decoration-none" href="/">Return home page!</a>
+      </p>
+      <% } else { %>
+      <h3>All announcements</h3>
+      <div class="d-flex my-2 justify-content-between">
+        <div>
+          <a
+            href="/announcement/add"
+            class="btn bg-main text-decoration-none text-light"
+            ><i class="fas fa-plus"></i
+          ></a>
+          <a
+            href="/announcement/trash"
+            class="btn bg-danger text-decoration-none text-light position-relative"
+          >
+            <i class="fas fa-trash-alt"></i>
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
+            >
+              1
+              <span class="visually-hidden">deleted announcements</span>
+            </span>
+          </a>
+        </div>
+        <form
+          class="d-flex col-4"
+          role="search"
+          action="/announcement/list"
+          method="get"
+        >
+          <input
+            class="form-control me-2 rounded-pill"
+            name="title"
+            type="search"
+            placeholder="Search announcement here"
+            aria-label="Search"
+          />
+          <button
+            class="btn bg-main btn-outline-light rounded-circle"
+            type="submit"
+          >
+            <i class="fas fa-magnifying-glass icon-custom"></i>
+          </button>
+        </form>
+      </div>
+
+      <table class="table table-hover">
+        <thead>
+          <tr class="table-primary">
+            <th scope="col">Title</th>
+            <th scope="col">Created By</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Updated At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% announcements.forEach(announcement => { %>
+          <tr>
+            <th scope="row">
+              <a
+                class="text-main text-decoration-none"
+                href="/announcement/<%= announcement._id %>"
+                ><%= announcement.title %></a
+              >
+            </th>
+            <td><%= announcement.createdBy %></td>
+            <td><%= announcement.createdAt.toLocaleString() %></td>
+            <td><%= announcement.updatedAt.toLocaleString() %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>
