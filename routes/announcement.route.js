@@ -3,6 +3,8 @@ const router = express.Router();
 const AnnouncementController = require("../controllers/announcement.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 const adminMiddleware = require("../middlewares/admin.middleware");
+const announceMiddleware = require("../middlewares/announceTrash.middleware");
+
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,6 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+router.use(announceMiddleware);
 router.get("/list", AnnouncementController.getAll);
 router.get("/add", authMiddleware, adminMiddleware, AnnouncementController.add);
 router.post(

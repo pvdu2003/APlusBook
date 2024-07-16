@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Courses</title>
+    <title>Create new announcement</title>
     <%- include('../../partials/main') %>
   </head>
   <% if(typeof user === 'undefined') user = {} %> <% if(typeof announcements ===
-  'undefined') announcements = {} %>
+  'undefined') announcements = {} %><% if(typeof err === 'undefined') err = {}
+  %>
   <body>
     <%- include('../../partials/header') %>
     <div class="container text-center px-5 mt-4">
       <h2>New announcement</h2>
-      <!-- Form to add new announcement -->
       <form
         method="post"
         action="/announcement/upload"
@@ -41,8 +41,12 @@
               id="title"
               name="title"
               placeholder="Announcement title"
+              required
             />
-            <p class="text-danger fst-italic" style="font-size: 14px">
+            <p
+              class="text-start text-danger fst-italic"
+              style="font-size: 14px"
+            >
               <%= err.title %>
             </p>
           </div>
@@ -57,10 +61,8 @@
               id="body"
               name="body"
               placeholder="Announcement body"
+              required
             ></textarea>
-            <p class="text-danger fst-italic" style="font-size: 14px">
-              <%= err.body %>
-            </p>
           </div>
         </div>
         <div class="row mb-3">
@@ -76,12 +78,17 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-9 offset-sm-3">
+          <div class="d-flex col-sm-3 offset-sm-3">
             <input
-              class="btn btn-success"
+              class="btn bg-main me-2 text-light"
               type="submit"
-              value="Post new announcement"
+              value="Post"
             />
+            <a
+              class="btn btn-secondary text-decoration-none"
+              href="/announcement/list"
+              >Cancel</a
+            >
           </div>
         </div>
       </form>

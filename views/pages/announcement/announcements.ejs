@@ -13,8 +13,13 @@
     <div class="container text-center px-5 mt-4">
       <% if(announcements.length <=0) { %>
       <p>
-        No announcement here!
+        No announcement here! <% if(user.role === "admin") { %>
+        <a class="text-main text-decoration-none" href="/announcement/add"
+          >Create new announcement</a
+        >
+        <% } else { %>
         <a class="text-main text-decoration-none" href="/">Return home page!</a>
+        <% } %>
       </p>
       <% } else { %>
       <h3>All announcements</h3>
@@ -33,7 +38,7 @@
             <span
               class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
             >
-              1
+              <%= announceTrash %>
               <span class="visually-hidden">deleted announcements</span>
             </span>
           </a>

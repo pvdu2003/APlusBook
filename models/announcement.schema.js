@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoose_delete = require("mongoose-delete");
 const Schema = mongoose.Schema;
 const objectId = mongoose.Schema.Types.ObjectId;
 
@@ -22,5 +23,9 @@ const announcementSchema = new Schema(
     timestamps: true,
   }
 );
+announcementSchema.plugin(mongoose_delete, {
+  indexFields: "all",
+  overrideMethods: "all",
+});
 const Announcements = mongoose.model("announcements", announcementSchema);
 module.exports = Announcements;

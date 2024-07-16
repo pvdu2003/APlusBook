@@ -5,7 +5,16 @@ class AnnouncementController {
   async getAll(req, res, next) {
     try {
       const user = req.cookies.user;
-      const announcements = await Announcements.find().sort({ updatedAt: -1 });
+      let title = req.query.title || "";
+      title = title.trim();
+      let announcements;
+      if (title) {
+        announcements = await Announcements.find({
+          title: { $regex: title, $options: "i" },
+        }).sort({ updatedAt: -1 });
+      } else {
+        announcements = await Announcements.find().sort({ updatedAt: -1 });
+      }
       res.render("pages/announcement/announcements", { user, announcements });
     } catch (e) {
       console.log(e);
@@ -42,34 +51,12 @@ class AnnouncementController {
       const files = req.files;
 
       let err = {};
-      if (title.length === 0 || title === null) {
-        err.title = "Please enter title for this announcement!";
-      }
-      if (body.length === 0 || body === null) {
-        err.body = "Please enter body for this announcement!";
-      }
-      const announcements = await Announcements.find()
-        .sort({
-          updatedAt: -1,
-        })
-        .limit(2);
-      const numAnnounce = await Announcements.countDocuments();
-      if (Object.keys(err).length > 0) {
-        return res.render("pages/home", {
-          user,
-          err,
-          announcements,
-          numAnnounce,
-        });
-      }
-      const prevTitle = await Announcements.find({ title: title });
-      if (prevTitle === title) {
+      const prevTitle = await Announcements.findOne({ title: title });
+      if (prevTitle) {
         err.title = "This title is already exist!";
-        return res.render("pages/home", {
+        return res.render("pages/announcement/add", {
           user,
           err,
-          announcements,
-          numAnnounce,
         });
       }
 
@@ -94,7 +81,6 @@ class AnnouncementController {
 
   // PUT/PATCH /announcement/update/:id
   async updateAnnouncement(req, res, next) {
-    const user = req.cookies.user;
     try {
       const { id } = req.params;
       const { title, body, updatedBy } = req.body;
@@ -111,7 +97,7 @@ class AnnouncementController {
       announcement.updatedBy = updatedBy;
 
       // Handle file updates
-      if (files) {
+      if (files.length > 0) {
         // Remove existing files
         announcement.files = [];
 
@@ -128,7 +114,6 @@ class AnnouncementController {
 
       await announcement.save();
       res.redirect("/announcement/list");
-      // return res.status(200).json(announcement);
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Internal server error" });
@@ -138,7 +123,7 @@ class AnnouncementController {
   async deleteAnnouncement(req, res, next) {
     try {
       const id = req.params.id;
-      await Announcements.findByIdAndDelete(id);
+      await Announcements.delete({ _id: id });
       return res.redirect("/announcement/list");
     } catch (e) {
       console.log(e);
