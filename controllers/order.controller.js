@@ -8,8 +8,11 @@ class orderController {
   async getAll(req, res, next) {
     try {
       const user = req.cookies.user;
-      const order = await Order.findOne({ user_id: user._id });
-      res.json(order);
+      const order = await Order.findOne({ user_id: user._id }).populate({
+        path: "orders.items.book_id",
+        select: "title price image",
+      });
+      res.render("pages/order/orderList", { order, user });
     } catch (error) {
       next(error);
     }
@@ -51,18 +54,53 @@ class orderController {
           quantity: item.quantity,
         };
       });
-      const order = new Order({
-        user_id: user._id,
-        orders: [
+      const existUser = await Order.findOne({ user_id: user._id });
+      if (!existUser) {
+        const order = new Order({
+          user_id: user._id,
+          orders: [
+            {
+              session_id: session.id,
+              items: orders,
+              total: session.amount_total / 100,
+              status: "Pending",
+            },
+          ],
+        });
+        await order.save();
+      } else {
+        const order = await Order.findOneAndUpdate(
+          { user_id: user._id },
           {
-            session_id: session.id,
-            items: orders,
-            total: session.amount_total / 100,
-            status: "pending",
+            $push: {
+              orders: {
+                session_id: session.id,
+                items: orders,
+                total: session.amount_total / 100,
+                status: "Pending",
+              },
+            },
           },
-        ],
-      });
-      await order.save();
+          { new: true }
+        );
+        if (!order) {
+          throw new Error("Order not found");
+        }
+      }
+      // Remove the ordered items from the cart
+      await Cart.updateMany(
+        {
+          user_id: user._id,
+          "carts.book_id": { $in: items.map((item) => item._id) },
+        },
+        {
+          $pull: {
+            carts: {
+              book_id: { $in: items.map((item) => item._id) },
+            },
+          },
+        }
+      );
       res.redirect(session.url);
     } catch (err) {
       console.error(err);
