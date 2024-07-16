@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Deleted Announcements</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if(typeof user === 'undefined') user = {} %> <% if(typeof announcements ===
+  'undefined') announcements = {} %>
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5 mt-4">
+      <% if(announcements.length <=0) { %>
+      <p>
+        Empty trash
+        <a class="text-main text-decoration-none" href="/announcement/list"
+          >Return announcement list!</a
+        >
+      </p>
+      <% } else { %>
+      <h3>All deleted announcements</h3>
+      <div class="d-flex my-2 justify-content-between">
+        <div>
+          <a
+            href="/announcement/list"
+            class="btn bg-main text-decoration-none text-light"
+            ><i class="fas fa-arrow-left"></i
+          ></a>
+        </div>
+        <form
+          class="d-flex col-4"
+          role="search"
+          action="/announcement/list"
+          method="get"
+        >
+          <input
+            class="form-control me-2 rounded-pill"
+            name="title"
+            type="search"
+            placeholder="Search announcement here"
+            aria-label="Search"
+          />
+          <button
+            class="btn bg-main btn-outline-light rounded-circle"
+            type="submit"
+          >
+            <i class="fas fa-magnifying-glass icon-custom"></i>
+          </button>
+        </form>
+      </div>
+
+      <table class="table table-hover">
+        <thead>
+          <tr class="table-primary">
+            <th scope="col">Title</th>
+            <th scope="col">Created By</th>
+            <th scope="col">Deleted By</th>
+            <th scope="col">Deleted At</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% announcements.forEach(announcement => { %>
+          <tr>
+            <th scope="row">
+              <a
+                class="text-main text-decoration-none"
+                href="/announcement/<%= announcement._id %>"
+                ><%= announcement.title %></a
+              >
+            </th>
+            <td><%= announcement.createdBy %></td>
+            <td><%= announcement.deletedBy %></td>
+            <td><%= announcement.deletedAt.toLocaleString() %></td>
+            <td
+              class="align-middle d-flex align-items-center justify-content-around"
+            >
+              <form
+                action="/announcement/restore/<%= announcement._id %>?_method=PATCH"
+                method="post"
+              >
+                <button class="btn bg-main text-light m-0" type="submit">
+                  <i class="fas fa-trash-restore-alt"></i>
+                </button>
+              </form>
+              <p
+                class="btn bg-danger m-0 text-light"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal<%= announcement._id %>"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </p>
+            </td>
+          </tr>
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="exampleModal<%= announcement._id %>"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Do you want to delete this announcement forever?
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  This announcement will removed from this list forever!
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                  <form
+                    action="/announcement/delete/<%= announcement._id %>/force?_method=DELETE"
+                    method="post"
+                  >
+                    <button class="btn bg-danger m-0 text-light" type="submit">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>

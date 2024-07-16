@@ -17,6 +17,7 @@ const announcementSchema = new Schema(
     ],
     createdBy: { type: String, ref: "users", required: true },
     updatedBy: { type: String, ref: "users" },
+    deletedBy: { type: objectId, ref: "users" },
   },
   {
     versionKey: false,
@@ -24,8 +25,9 @@ const announcementSchema = new Schema(
   }
 );
 announcementSchema.plugin(mongoose_delete, {
-  indexFields: "all",
   overrideMethods: "all",
+  deletedAt: true,
+  deletedBy: true,
 });
 const Announcements = mongoose.model("announcements", announcementSchema);
 module.exports = Announcements;

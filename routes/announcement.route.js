@@ -19,6 +19,24 @@ const upload = multer({ storage });
 router.use(announceMiddleware);
 router.get("/list", AnnouncementController.getAll);
 router.get("/add", authMiddleware, adminMiddleware, AnnouncementController.add);
+router.get(
+  "/trash",
+  authMiddleware,
+  adminMiddleware,
+  AnnouncementController.renderTrash
+);
+router.patch(
+  "/restore/:id",
+  authMiddleware,
+  adminMiddleware,
+  AnnouncementController.restore
+);
+router.delete(
+  "/delete/:id/force",
+  authMiddleware,
+  adminMiddleware,
+  AnnouncementController.forceDelete
+);
 router.post(
   "/upload",
   authMiddleware,

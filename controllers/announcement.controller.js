@@ -36,7 +36,7 @@ class AnnouncementController {
     try {
       const user = req.cookies.user;
       const id = req.params.id;
-      const announcement = await Announcements.findById(id);
+      const announcement = await Announcements.findOneWithDeleted({ _id: id });
       res.render("pages/announcement/announcement", { user, announcement });
     } catch (error) {
       console.log(error);
@@ -119,6 +119,15 @@ class AnnouncementController {
       return res.status(500).json({ error: "Internal server error" });
     }
   }
+  // GET /announcement/trash
+  async renderTrash(req, res, next) {
+    const announcements = await Announcements.findWithDeleted({
+      deleted: true,
+    });
+    // res.json(announcements);
+    res.render("pages/announcement/trash", { announcements });
+  }
+  // TODO: add deletedBy field in db
   // DELETE /announcement/delete/:id
   async deleteAnnouncement(req, res, next) {
     try {
@@ -128,6 +137,25 @@ class AnnouncementController {
     } catch (e) {
       console.log(e);
       res.status(500).send("Internal server error");
+    }
+  }
+  // [DELETE] /announcement/delete/:id/force
+  async forceDelete(req, res, next) {
+    try {
+      const id = req.params.id;
+      await Announcements.deleteOne({ _id: id });
+      res.redirect("/announcement/list");
+    } catch (error) {
+      next(error);
+    }
+  }
+  // [PATCH] /announcement/restore/:id
+  async restore(req, res, next) {
+    try {
+      await Announcements.restore({ _id: req.params.id });
+      res.redirect("/announcement/list");
+    } catch (error) {
+      next(error);
     }
   }
 }

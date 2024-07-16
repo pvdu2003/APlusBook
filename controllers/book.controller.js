@@ -4,7 +4,9 @@ class bookController {
   // [GET] /book/:id
   async getById(req, res, next) {
     let id = req.params.id;
-    const book = await Book.findById(id).populate("cat_id").lean();
+    const book = await Book.findOneWithDeleted({ _id: id })
+      .populate("cat_id")
+      .lean();
     res.render("pages/book/bookDetail", { book });
   }
 
