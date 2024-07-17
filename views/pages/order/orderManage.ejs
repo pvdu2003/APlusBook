@@ -6,13 +6,15 @@
   </head>
   <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
   'undefined') category = {}; %>
-
   <body>
     <%- include('../../partials/header') %>
     <div class="container text-center px-5">
       <div class="row align-items-start my-5">
         <%- include('../../partials/userNav', {user: user}) %>
         <div class="col-9 text-start ms-5">
+          <% if(orders.length <= 0) { %>
+            <p>No order here! <a class="text-center text-main text-decoration-none" href="/order/manage">Return manage order page!</a></p>
+            <% } else {%>
           <h4 class="text-center fw-bold">MANAGE ORDERS</h4>
           <div class="d-flex my-2 justify-content-between align-items-center">
             <div>
@@ -42,7 +44,7 @@
             >
               <input
                 class="form-control me-2 rounded-pill"
-                name="username"
+                name="name"
                 type="search"
                 placeholder="Search user here"
                 aria-label="Search"
@@ -55,6 +57,7 @@
               </button>
             </form>
           </div>
+         
           <table class="table table-hover">
             <thead>
               <tr class="table-primary">
@@ -65,7 +68,8 @@
                 <th scope="col" class="text-center">Action</th>
               </tr>
             </thead>
-            <tbody>
+            
+            <tbody> 
               <% orders.forEach(function(order) { %> <%
               order.orders.forEach(function(ord, index) { %>
               <tr>
@@ -161,6 +165,7 @@
               <% }) }) %>
             </tbody>
           </table>
+          <%} %>
         </div>
       </div>
     </div>

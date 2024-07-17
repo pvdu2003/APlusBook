@@ -2,6 +2,7 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Cart = require("../models/cart.schema");
 const Order = require("../models/order.schema");
+const User = require("../models/user.schema");
 
 class orderController {
   // [GET] /order/list
@@ -115,18 +116,38 @@ class orderController {
       const user = req.cookies.user;
       // const currentPage = parseInt(req.query.page) || 1;
       // const size = parseInt(req.query.size) || 20;
-      // const keyword = req.query.keyword || "";
+      const name = req.query.name || "";
       let totalOrders;
-      const orders = await Order.find({})
-        .populate({
-          path: "orders.items.book_id",
-          select: "title price",
-        })
-        .populate({
-          path: "user_id",
-          select: "name username",
-        })
-        .sort({ paidAt: -1 });
+      let orders;
+      if (name) {
+        const usr = await User.findOne({
+          name: { $regex: name, $options: "i" },
+        });
+        if (!usr) {
+          return res.render("pages/order/orderManage", { user, orders: [] });
+        }
+        orders = await Order.find({ user_id: user._id })
+          .populate({
+            path: "orders.items.book_id",
+            select: "title price",
+          })
+          .populate({
+            path: "user_id",
+            select: "name username",
+          })
+          .sort({ paidAt: -1 });
+      } else {
+        orders = await Order.find({})
+          .populate({
+            path: "orders.items.book_id",
+            select: "title price",
+          })
+          .populate({
+            path: "user_id",
+            select: "name username",
+          })
+          .sort({ paidAt: -1 });
+      }
 
       totalOrders = await Order.countDocuments({ user_id: user._id });
       // res.json(orders);
