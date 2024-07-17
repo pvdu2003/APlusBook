@@ -109,6 +109,36 @@ class orderController {
       });
     }
   }
+  // [GET] /order/manage
+  async manage(req, res, next) {
+    try {
+      const user = req.cookies.user;
+      // const currentPage = parseInt(req.query.page) || 1;
+      // const size = parseInt(req.query.size) || 20;
+      // const keyword = req.query.keyword || "";
+      let totalOrders;
+      const orders = await Order.find({})
+        .populate({
+          path: "orders.items.book_id",
+          select: "title price",
+        })
+        .populate({
+          path: "user_id",
+          select: "name username",
+        })
+        .sort({ paidAt: -1 });
+
+      totalOrders = await Order.countDocuments({ user_id: user._id });
+      // res.json(orders);
+      res.render("pages/order/orderManage", {
+        orders,
+        totalOrders,
+        user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
   // [DELETE] /order/delete/:id
   async deleteHandler(req, res, next) {}
 }

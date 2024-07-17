@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Manage Order</title>
+    <%- include('../../partials/main') %>
+  </head>
+  <% if (typeof err === 'undefined') err = {}; %> <% if (typeof category ===
+  'undefined') category = {}; %>
+
+  <body>
+    <%- include('../../partials/header') %>
+    <div class="container text-center px-5">
+      <div class="row align-items-start my-5">
+        <%- include('../../partials/userNav', {user: user}) %>
+        <div class="col-9 text-start ms-5">
+          <h4 class="text-center fw-bold">MANAGE ORDERS</h4>
+          <div class="d-flex my-2 justify-content-between align-items-center">
+            <div>
+              <a
+                href="/book/add"
+                class="btn bg-main text-decoration-none text-light"
+                ><i class="fas fa-plus"></i
+              ></a>
+              <a
+                href="/book/trash"
+                class="btn bg-danger text-decoration-none text-light position-relative"
+              >
+                <i class="fas fa-trash-alt"></i>
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
+                >
+                  1
+                  <span class="visually-hidden">deleted books</span>
+                </span>
+              </a>
+            </div>
+            <form
+              class="d-flex col-4"
+              role="search"
+              action="/order/manage"
+              method="get"
+            >
+              <input
+                class="form-control me-2 rounded-pill"
+                name="username"
+                type="search"
+                placeholder="Search user here"
+                aria-label="Search"
+              />
+              <button
+                class="btn bg-main btn-outline-light rounded-circle"
+                type="submit"
+              >
+                <i class="fas fa-magnifying-glass icon-custom"></i>
+              </button>
+            </form>
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col" class="text-center">User's name</th>
+                <th scope="col" class="text-center">Total Price</th>
+                <th scope="col" class="text-center">Status</th>
+                <th scope="col" class="text-center">Paid at</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(function(order) { %> <%
+              order.orders.forEach(function(ord) { %>
+              <tr>
+                <td class="align-middle text-center fw-bold">
+                  <%= order.user_id.name %>
+                </td>
+
+                <td class="align-middle text-center"><%= ord.total %></td>
+                <% if(ord.status === "Fail") {%>
+                <td class="align-middle text-center fw-medium text-danger">
+                  <span>Fail</span>
+                </td>
+                <% } else { %>
+                <td class="align-middle text-center fw-medium text-main">
+                  <span><%= ord.status %></span>
+                </td>
+                <% } %>
+
+                <td class="align-middle text-center fw-medium">
+                  <%= ord.paidAt.toLocaleString() %>
+                </td>
+
+                <td
+                  class="align-middle d-flex align-items-center justify-content-around"
+                >
+                  <p class="btn bg-main m-0">
+                    <a
+                      class="text-decoration-none text-light"
+                      href="/order/update/<%= order._id %>"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                  </p>
+                  <p
+                    class="btn bg-danger m-0 text-light"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal<%= order._id %>"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </p>
+                </td>
+              </tr>
+              <% }) %>
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="exampleModal<%= order._id %>"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Do you want to delete this order?
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      This order will removed from this list, then moved to
+                      trash
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancel
+                      </button>
+                      <form
+                        action="/order/delete/<%= order._id %>?_method=DELETE"
+                        method="post"
+                      >
+                        <button
+                          class="btn bg-danger m-0 text-light"
+                          type="submit"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <%}) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <%- include('../../partials/footer') %>
+  </body>
+</html>
