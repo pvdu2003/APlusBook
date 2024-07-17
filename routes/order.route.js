@@ -6,6 +6,12 @@ const adminMiddleware = require("../middlewares/admin.middleware");
 
 router.get("/list", authMiddleware, orderController.getAll);
 router.get("/manage", authMiddleware, adminMiddleware, orderController.manage);
+router.patch(
+  "/update/:id",
+  authMiddleware,
+  adminMiddleware,
+  orderController.updateHandler
+);
 router.post("/checkout", authMiddleware, orderController.checkout);
 router.delete("/delete/:id", authMiddleware, orderController.deleteHandler);
 

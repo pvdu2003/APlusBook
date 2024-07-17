@@ -139,6 +139,42 @@ class orderController {
       next(error);
     }
   }
+  // [GET] /order/:id
+  async detail(req, res, next) {
+    try {
+      const user = req.cookies.user;
+      const id = req.params.id;
+      const order = await Order.findById(id)
+        .populate({
+          path: "orders.items.book_id",
+          select: "title price",
+        })
+        .populate({
+          path: "user_id",
+          select: "name username",
+        });
+      res.render("pages/order/orderDetail", { order, user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // [PATCH] /order/update/:id
+  async updateHandler(req, res, next) {
+    try {
+      const user_id = req.params.id;
+      const { status, index } = req.body;
+      const order = await Order.findOne({ user_id });
+      if (!order) {
+        throw new Error("Order not found");
+      }
+      order.orders[index].status = status;
+      await order.save();
+      res.redirect("/order/manage");
+    } catch (error) {
+      next(error);
+    }
+  }
   // [DELETE] /order/delete/:id
   async deleteHandler(req, res, next) {}
 }
