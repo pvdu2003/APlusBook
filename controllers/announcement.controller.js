@@ -121,10 +121,18 @@ class AnnouncementController {
   }
   // GET /announcement/trash
   async renderTrash(req, res, next) {
-    const announcements = await Announcements.findWithDeleted({
-      deleted: true,
-    });
-    // res.json(announcements);
+    let title = req.query.title || "";
+    title = title.trim();
+    let announcements;
+    if (title) {
+      announcements = await Announcements.findWithDeleted({
+        title: { $regex: title, $options: "i" },
+      }).sort({ updatedAt: -1 });
+    } else {
+      announcements = await Announcements.findWithDeleted({
+        deleted: true,
+      });
+    }
     res.render("pages/announcement/trash", { announcements });
   }
   // TODO: add deletedBy field in db

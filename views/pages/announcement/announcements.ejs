@@ -24,10 +24,11 @@
       <% } else { %>
       <h3>All announcements</h3>
       <div class="d-flex my-2 justify-content-between">
-        <div>
+        <% if(user.role === "admin") { %>
+        <div class="d-flex flex-row">
           <a
             href="/announcement/add"
-            class="btn bg-main text-decoration-none text-light"
+            class="btn bg-main text-decoration-none text-light me-2"
             ><i class="fas fa-plus"></i
           ></a>
           <a
@@ -43,8 +44,9 @@
             </span>
           </a>
         </div>
+        <% } %>
         <form
-          class="d-flex col-4"
+          class="d-flex col-4 offset-4 col-sm-auto ms-auto"
           role="search"
           action="/announcement/list"
           method="get"
@@ -79,7 +81,8 @@
           <tr>
             <th scope="row">
               <a
-                class="text-main text-decoration-none"
+                class="d-inline-block text-truncate text-main text-decoration-none"
+                style="max-width: 450px"
                 href="/announcement/<%= announcement._id %>"
                 ><%= announcement.title %></a
               >
