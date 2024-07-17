@@ -61,13 +61,13 @@
           Updated at: <%= announcement.updatedAt.toLocaleString() %>
         </p>
         <%} %>
-        <p class="m-3"><%= announcement.body %></p>
+        <pre class="m-3" style="white-space: pre-wrap;"><%= announcement.body %></pre>
         <% if (announcement.files.length > 0) { %>
-        <p>Attached files:</p>
+        <p class="fw-medium text-decoration-underline">Attached files:</p>
         <ul>
           <% announcement.files.forEach(file => { %>
           <li class="list-group-item">
-            <a href="<%= file.path %>" download><%= file.name %></a>
+            <a class="text-main text-decoration-none" href="<%= file.path %>" download><%= file.name %></a>
           </li>
           <% }); %>
         </ul>
