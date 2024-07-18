@@ -14,5 +14,6 @@ router.patch(
 );
 router.post("/checkout", authMiddleware, orderController.checkout);
 router.delete("/delete/:id", authMiddleware, orderController.deleteHandler);
+router.get("/:id", authMiddleware, adminMiddleware, orderController.detail);
 
 module.exports = router;

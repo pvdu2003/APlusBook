@@ -165,16 +165,21 @@ class orderController {
     try {
       const user = req.cookies.user;
       const id = req.params.id;
-      const order = await Order.findById(id)
+      const order = await Order.findOne({ user_id: user._id })
         .populate({
           path: "orders.items.book_id",
-          select: "title price",
+          select: "title price author image description",
         })
         .populate({
           path: "user_id",
           select: "name username",
         });
-      res.render("pages/order/orderDetail", { order, user });
+
+      const orderDetail = order.orders.filter(
+        (order) => order._id.toString() === id
+      )[0];
+      // res.json(orderDetail);
+      res.render("pages/order/orderDetail", { orderDetail, user });
     } catch (error) {
       next(error);
     }
