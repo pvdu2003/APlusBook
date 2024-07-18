@@ -14,35 +14,31 @@
         <%- include('../../partials/userNav', {user: user}) %>
         <div class="col-9 text-start ms-5">
           <h4 class="text-center fw-bold">FAIL ORDERS</h4>
+          <% if(orders.length <=0 ) { %>
+          <p class="text-center mt-3">
+            Not found!
+            <a class="text-main text-decoration-none" href="/order/fails"
+              >Come back</a
+            >
+          </p>
+          <% } else{ %>
           <div class="d-flex my-2 justify-content-between align-items-center">
             <div>
               <a
-                href="/book/add"
-                class="btn bg-main text-decoration-none text-light"
-                ><i class="fas fa-plus"></i
+                href="javascript:history.back()"
+                class="btn bg-main text-light text-decoration-none"
+                ><i class="fas fa-arrow-left"></i
               ></a>
-              <a
-                href="/book/trash"
-                class="btn bg-danger text-decoration-none text-light position-relative"
-              >
-                <i class="fas fa-exclamation-triangle"></i>
-                <span
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-subtle text-danger-emphasis"
-                >
-                  1
-                  <span class="visually-hidden">fail orders</span>
-                </span>
-              </a>
             </div>
             <form
               class="d-flex col-4"
               role="search"
-              action="/order/manage"
+              action="/order/fails"
               method="get"
             >
               <input
                 class="form-control me-2 rounded-pill"
-                name="username"
+                name="name"
                 type="search"
                 placeholder="Search user here"
                 aria-label="Search"
@@ -155,7 +151,7 @@
                   </div>
                 </div>
               </div>
-              <%}) %>
+              <%})} %>
             </tbody>
           </table>
         </div>

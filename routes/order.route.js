@@ -6,6 +6,12 @@ const adminMiddleware = require("../middlewares/admin.middleware");
 
 router.get("/list", authMiddleware, orderController.getAll);
 router.get("/manage", authMiddleware, adminMiddleware, orderController.manage);
+router.get(
+  "/fails",
+  authMiddleware,
+  adminMiddleware,
+  orderController.getFailOrders
+);
 router.patch(
   "/update/:id",
   authMiddleware,

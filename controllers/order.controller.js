@@ -201,6 +201,57 @@ class orderController {
       next(error);
     }
   }
+  // [GET] /order/fails
+  async getFailOrders(req, res, next) {
+    try {
+      const user = req.cookies.user;
+      const name = req.query.name || "";
+      let failedOrders;
+      if (name) {
+        const usr = await User.findOne({
+          name: { $regex: name, $options: "i" },
+        });
+        if (!usr) {
+          return res.render("pages/order/orderFail", { user, orders: [] });
+        }
+        failedOrders = await Order.find({
+          user_id: user._id,
+          "orders.status": "Fail",
+        })
+          .populate({
+            path: "orders.items.book_id",
+            select: "title price",
+          })
+          .populate({
+            path: "user_id",
+            select: "name username",
+          })
+          .sort({ paidAt: -1 });
+      } else {
+        failedOrders = await Order.find({
+          "orders.status": "Fail",
+        })
+          .populate({
+            path: "orders.items.book_id",
+            select: "title price",
+          })
+          .populate({
+            path: "user_id",
+            select: "name username",
+          })
+          .sort({ paidAt: -1 });
+      }
+      const orders = failedOrders.map((order) => ({
+        _id: order._id,
+        user_id: order.user_id,
+        orders: order.orders.filter((o) => o.status === "Fail"),
+      }));
+      // res.json(orders);
+      res.render("pages/order/orderFail", { orders, user });
+    } catch (error) {
+      next(error);
+    }
+  }
   // [DELETE] /order/delete/:id
   async deleteHandler(req, res, next) {}
 }
