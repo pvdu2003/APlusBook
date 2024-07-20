@@ -23,6 +23,7 @@ class orderController {
     try {
       const user = req.cookies.user;
       const items = JSON.parse(req.body.selectedBooks);
+      console.log(items);
       const line_items = items.map((item) => {
         return {
           price_data: {
@@ -55,6 +56,9 @@ class orderController {
           quantity: item.quantity,
         };
       });
+      if (session.statusCode === 400) {
+        return res.redirect(session.cancel_url);
+      }
       const existUser = await Order.findOne({ user_id: user._id });
       if (!existUser) {
         const order = new Order({

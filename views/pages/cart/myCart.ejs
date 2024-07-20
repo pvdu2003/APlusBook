@@ -47,7 +47,10 @@
             </div>
           </div>
           <hr />
-          <ul class="list-group list-group-flush text-center">
+          <ul
+            class="list-group list-group-flush text-center"
+            id="<%= cart.publisher %>"
+          >
             <% cart.books.forEach(book => { %>
             <li class="d-flex align-items-center list-group-item p-0 py-2">
               <div class="col-sm-1">
@@ -78,9 +81,36 @@
                   <%= book.title %>
                 </a>
               </div>
-              <div class="col-sm-2"><%= book.book_id.price %></div>
-              <div class="col-sm-2"><%= book.quantity %></div>
-              <div class="col-sm-2">
+              <div class="col-sm-2" id="price"><%= book.book_id.price %></div>
+              <div class="input-group col-sm-2" style="width: 6rem">
+                <button
+                  class="btn btn-sm"
+                  type="button"
+                  onclick="decrementQuantity(event)"
+                >
+                  <i class="fas fa-minus"></i>
+                </button>
+
+                <input
+                  type="number"
+                  class="form-control form-control-sm border-0 text-center"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  value="<%= book.quantity %>"
+                  onchange="updateTotalPrice(event)"
+                  required
+                />
+
+                <button
+                  class="btn btn-sm"
+                  type="button"
+                  onclick="incrementQuantity(event)"
+                >
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div class="col-sm-2" id="total-price">
                 <%= (book.book_id.price * book.quantity).toFixed(2) %>
               </div>
               <form
@@ -115,6 +145,47 @@
     <%- include('../../partials/footer') %>
   </body>
   <script>
+    function decrementQuantity(event) {
+      const inputField = event.currentTarget
+        .closest(".input-group")
+        .querySelector('input[type="number"]');
+
+      if (inputField) {
+        let currentValue = parseInt(inputField.value);
+        if (currentValue > 1) {
+          inputField.value = currentValue - 1;
+          updateTotalPrice(event.currentTarget);
+        }
+      } else {
+        console.error("Could not find input field");
+      }
+    }
+
+    function incrementQuantity(event) {
+      const inputField = event.currentTarget
+        .closest(".input-group")
+        .querySelector('input[type="number"]');
+
+      if (inputField) {
+        let currentValue = parseInt(inputField.value);
+        inputField.value = currentValue + 1;
+        updateTotalPrice(event.currentTarget);
+      } else {
+        console.error("Could not find input field");
+      }
+    }
+
+    function updateTotalPrice(event) {
+      const li = event.closest("li");
+      const quantityInput = li.querySelector("#quantity");
+      const priceElement = li.querySelector("#price");
+      const totalPriceElement = li.querySelector("#total-price");
+      const price = Number(priceElement.textContent);
+      const quantity = parseInt(quantityInput.value);
+      const totalPrice = (price * quantity).toFixed(2);
+      totalPriceElement.textContent = totalPrice;
+      updateTotalFee();
+    }
     function handlePublisherCheckboxChange(publisherCheckbox) {
       const bookCheckboxes = document.querySelectorAll(
         `.book-checkbox[data-publisher="${publisherCheckbox.value}"]`
@@ -141,13 +212,12 @@
           .textContent.trim();
 
         const itemPrice = parseFloat(
-          checkbox.closest("li").querySelector(".col-sm-2:nth-child(3)")
-            .textContent
+          checkbox.closest("li").querySelector("#price").textContent
         );
-        const itemQuantity = parseFloat(
-          checkbox.closest("li").querySelector(".col-sm-2:nth-child(4)")
-            .textContent
+        const itemQuantity = Number(
+          checkbox.closest("li").querySelector("#quantity").value
         );
+
         totalFee += itemPrice * itemQuantity;
         selectedBookIds.push({
           _id: bookId,
