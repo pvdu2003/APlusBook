@@ -8,6 +8,7 @@ const announcementSchema = new Schema(
     _id: { type: objectId, auto: true },
     title: { type: String, required: true, unique: true },
     body: { type: String, required: true },
+    url: { type: String },
     files: [
       {
         path: { type: String, required: true },

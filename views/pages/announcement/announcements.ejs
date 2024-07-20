@@ -10,7 +10,7 @@
   'undefined') announcements = {} %>
   <body>
     <%- include('../../partials/header') %>
-    <div class="container text-center px-5 mt-4">
+    <div class="container text-center px-5 my-4">
       <% if(announcements.length <=0) { %>
       <p>
         No announcement here! <% if(user.role === "admin") { %>
@@ -67,7 +67,7 @@
         </form>
       </div>
 
-      <table class="table table-hover">
+      <table class="table table-hover mb-5">
         <thead>
           <tr class="table-primary">
             <th scope="col">Title</th>
@@ -80,21 +80,84 @@
           <% announcements.forEach(announcement => { %>
           <tr>
             <th scope="row">
+              <% if (announcement.url) { %>
+              <a
+                class="d-inline-block text-truncate text-main text-decoration-none"
+                style="max-width: 450px"
+                href="<%= announcement.url %>"
+                target="_blank"
+                ><%= announcement.title %></a
+              >
+              <% } else { %>
               <a
                 class="d-inline-block text-truncate text-main text-decoration-none"
                 style="max-width: 450px"
                 href="/announcement/<%= announcement._id %>"
                 ><%= announcement.title %></a
               >
+              <% } %>
             </th>
             <td><%= announcement.createdBy %></td>
             <td><%= announcement.createdAt.toLocaleString() %></td>
-            <td><%= announcement.updatedAt.toLocaleString() %></td>
+            <td><%= announcement.updatedAt?.toLocaleString() %></td>
           </tr>
           <% }) %>
         </tbody>
       </table>
-      <% } %>
+      <% if (totalPages > 1) { %>
+      <nav aria-label="Page navigation" class="my-5">
+        <ul class="pagination justify-content-center my-4">
+          <li
+            class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
+          >
+            <a
+              class="page-link"
+              href="/announcement/list?page=1<%= title? `&title=${title}`: "" %>"
+              ><i class="fas fa-angle-double-left"></i
+            ></a>
+          </li>
+          <li
+            class="<%= currentPage == 1 ? 'page-item disabled' : 'page-item' %>"
+          >
+            <a
+              class="page-link"
+              href="/announcement/list?page=<%= currentPage-1 %><%= title? `&title=${title}`: "" %>"
+              ><i class="fas fa-chevron-left"></i
+            ></a>
+          </li>
+          <% for (let pageNum = 1; pageNum <= totalPages; pageNum++) { %>
+          <li
+            class="<%= pageNum == currentPage ? 'page-item active bg-main' : 'page-item' %>"
+          >
+            <a
+              class="page-link"
+              href="/announcement/list?page=<%= pageNum %><%= title? `&title=${title}`: "" %>"
+              ><%= pageNum %></a
+            >
+          </li>
+          <% } %>
+          <li
+            class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
+          >
+            <a
+              class="page-link"
+              href="/announcement/list?page=<%= currentPage+1 %><%= title? `&title=${title}`: "" %>"
+              ><i class="fas fa-chevron-right"></i
+            ></a>
+          </li>
+          <li
+            class="<%= currentPage == totalPages ? 'page-item disabled' : 'page-item' %>"
+          >
+            <a
+              class="page-link"
+              href="/announcement/list?page=<%= totalPages %><%= title? `&title=${title}`: "" %>"
+              ><i class="fas fa-angle-double-right"></i
+            ></a>
+          </li>
+        </ul>
+      </nav>
+      <% } %> <% } %>
+      <div class="my-2"></div>
     </div>
     <%- include('../../partials/footer') %>
   </body>

@@ -6,16 +6,36 @@ class AnnouncementController {
     try {
       const user = req.cookies.user;
       let title = req.query.title || "";
+      const currentPage = parseInt(req.query.page) || 1;
+      const size = parseInt(req.query.size) || 20;
       title = title.trim();
       let announcements;
+      let total;
       if (title) {
         announcements = await Announcements.find({
           title: { $regex: title, $options: "i" },
-        }).sort({ updatedAt: -1 });
+        })
+          .skip((currentPage - 1) * size)
+          .limit(size)
+          .sort({ updatedAt: -1 });
+        total = await Announcements.countDocuments({
+          title: { $regex: title, $options: "i" },
+        });
       } else {
-        announcements = await Announcements.find().sort({ updatedAt: -1 });
+        announcements = await Announcements.find()
+          .skip((currentPage - 1) * size)
+          .limit(size)
+          .sort({ updatedAt: -1 });
+        total = await Announcements.countDocuments();
       }
-      res.render("pages/announcement/announcements", { user, announcements });
+      const totalPages = Math.ceil(total / size);
+      res.render("pages/announcement/announcements", {
+        user,
+        announcements,
+        currentPage,
+        totalPages,
+        title,
+      });
     } catch (e) {
       console.log(e);
       res.status(500).send("Internal server error");
