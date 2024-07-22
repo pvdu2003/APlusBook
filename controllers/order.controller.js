@@ -2,6 +2,7 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Cart = require("../models/cart.schema");
 const Order = require("../models/order.schema");
+const Book = require("../models/book.schema");
 const User = require("../models/user.schema");
 
 class orderController {
@@ -13,6 +14,9 @@ class orderController {
         path: "orders.items.book_id",
         select: "title price image",
       });
+      order.orders.sort((a, b) => {
+        return new Date(b.paidAt) - new Date(a.paidAt);
+      });
       res.render("pages/order/orderList", { order, user });
     } catch (error) {
       next(error);
@@ -23,7 +27,6 @@ class orderController {
     try {
       const user = req.cookies.user;
       const items = JSON.parse(req.body.selectedBooks);
-      console.log(items);
       const line_items = items.map((item) => {
         return {
           price_data: {
@@ -92,6 +95,17 @@ class orderController {
           throw new Error("Order not found");
         }
       }
+      for (const item of items) {
+        await Book.updateOne(
+          { _id: item._id },
+          {
+            $inc: {
+              quantity_in_stock: -item.quantity,
+              quantity_sold: item.quantity,
+            },
+          }
+        );
+      }
       // Remove the ordered items from the cart
       await Cart.updateMany(
         {
@@ -154,7 +168,6 @@ class orderController {
       }
 
       totalOrders = await Order.countDocuments({ user_id: user._id });
-      // res.json(orders);
       res.render("pages/order/orderManage", {
         orders,
         totalOrders,
@@ -182,7 +195,6 @@ class orderController {
       const orderDetail = order.orders.filter(
         (order) => order._id.toString() === id
       )[0];
-      // res.json(orderDetail);
       res.render("pages/order/orderDetail", { orderDetail, user });
     } catch (error) {
       next(error);
@@ -250,7 +262,6 @@ class orderController {
         user_id: order.user_id,
         orders: order.orders.filter((o) => o.status === "Fail"),
       }));
-      // res.json(orders);
       res.render("pages/order/orderFail", { orders, user });
     } catch (error) {
       next(error);
